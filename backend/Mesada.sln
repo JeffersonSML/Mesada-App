@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{13DFD46B-3089-451A-B5DE-D52E655EE6C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mesada.Domain", "src\Mesada.Domain\Mesada.Domain.csproj", "{07632942-2356-4861-8643-500801AB1CA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mesada.Application", "src\Mesada.Application\Mesada.Application.csproj", "{B0523FF0-B072-4BD1-8B0D-B131BD9286B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mesada.Infrastructure", "src\Mesada.Infrastructure\Mesada.Infrastructure.csproj", "{7AA601B8-768F-4023-A097-161C9C9BA4FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mesada.Api", "src\Mesada.Api\Mesada.Api.csproj", "{3C445A71-4B2F-4E1F-945C-8081A8644B3D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A19C2646-6545-463C-BEE7-F548483301A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mesada.Domain.Tests", "tests\Mesada.Domain.Tests\Mesada.Domain.Tests.csproj", "{B32F4B91-5824-4244-848F-4FCA5119F446}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mesada.IntegrationTests", "tests\Mesada.IntegrationTests\Mesada.IntegrationTests.csproj", "{F562E419-BA6C-4FA6-9E84-213E74269C31}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07632942-2356-4861-8643-500801AB1CA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07632942-2356-4861-8643-500801AB1CA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07632942-2356-4861-8643-500801AB1CA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07632942-2356-4861-8643-500801AB1CA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0523FF0-B072-4BD1-8B0D-B131BD9286B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0523FF0-B072-4BD1-8B0D-B131BD9286B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0523FF0-B072-4BD1-8B0D-B131BD9286B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0523FF0-B072-4BD1-8B0D-B131BD9286B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AA601B8-768F-4023-A097-161C9C9BA4FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AA601B8-768F-4023-A097-161C9C9BA4FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AA601B8-768F-4023-A097-161C9C9BA4FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AA601B8-768F-4023-A097-161C9C9BA4FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C445A71-4B2F-4E1F-945C-8081A8644B3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C445A71-4B2F-4E1F-945C-8081A8644B3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C445A71-4B2F-4E1F-945C-8081A8644B3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C445A71-4B2F-4E1F-945C-8081A8644B3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B32F4B91-5824-4244-848F-4FCA5119F446}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B32F4B91-5824-4244-848F-4FCA5119F446}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B32F4B91-5824-4244-848F-4FCA5119F446}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B32F4B91-5824-4244-848F-4FCA5119F446}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F562E419-BA6C-4FA6-9E84-213E74269C31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F562E419-BA6C-4FA6-9E84-213E74269C31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F562E419-BA6C-4FA6-9E84-213E74269C31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F562E419-BA6C-4FA6-9E84-213E74269C31}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{07632942-2356-4861-8643-500801AB1CA5} = {13DFD46B-3089-451A-B5DE-D52E655EE6C0}
+		{B0523FF0-B072-4BD1-8B0D-B131BD9286B9} = {13DFD46B-3089-451A-B5DE-D52E655EE6C0}
+		{7AA601B8-768F-4023-A097-161C9C9BA4FD} = {13DFD46B-3089-451A-B5DE-D52E655EE6C0}
+		{3C445A71-4B2F-4E1F-945C-8081A8644B3D} = {13DFD46B-3089-451A-B5DE-D52E655EE6C0}
+		{B32F4B91-5824-4244-848F-4FCA5119F446} = {A19C2646-6545-463C-BEE7-F548483301A3}
+		{F562E419-BA6C-4FA6-9E84-213E74269C31} = {A19C2646-6545-463C-BEE7-F548483301A3}
+	EndGlobalSection
+EndGlobal

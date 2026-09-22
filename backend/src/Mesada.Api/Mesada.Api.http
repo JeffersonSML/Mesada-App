@@ -1,0 +1,24 @@
+@Mesada.Api_HostAddress = http://localhost:5080
+
+### Login do Master
+POST {{Mesada.Api_HostAddress}}/api/auth/master/login
+Content-Type: application/json
+
+{
+  "email": "master@exemplo.com",
+  "senha": "trocar-por-uma-senha-real"
+}
+
+### Resgate de convite (app do filho)
+POST {{Mesada.Api_HostAddress}}/api/auth/convites/CODIGO-DO-CONVITE/resgatar
+Content-Type: application/json
+
+{
+  "dispositivoId": "id-do-dispositivo"
+}
+
+### Listar filhos da família autenticada (Master)
+GET {{Mesada.Api_HostAddress}}/api/filhos
+Authorization: Bearer {{token}}
+
+###

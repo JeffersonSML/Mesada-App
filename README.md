@@ -47,7 +47,7 @@ ritmo de evolução enquanto o produto é construído por um único time.
 
 1. Estruturar o repositório no GitHub ✅
 2. Provisionar o PostgreSQL e modelar o schema inicial ✅
-3. Criar o projeto backend .NET com autenticação e o motor de cálculo
+3. Criar o projeto backend .NET com autenticação e o motor de cálculo ✅
 4. Criar o projeto Web em Angular
 5. Criar os projetos mobile nativos (Android e iOS)
 6. Configurar os serviços de infraestrutura (push, e-mail, storage, pagamento)
