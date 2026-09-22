@@ -34,7 +34,7 @@ ritmo de evolução enquanto o produto é construído por um único time.
 |---|---|
 | Backend | .NET C# — API RESTful multi-tenant |
 | Banco de dados | PostgreSQL com Row Level Security |
-| Web | Angular (build/deploy via Lovable) |
+| Web | Angular, construída via [Lovable](https://lovable.dev) |
 | Mobile Android | Kotlin nativo |
 | Mobile iOS | Swift nativo |
 | Offline (mobile) | SQLite local + fila de sincronização |
@@ -46,7 +46,7 @@ ritmo de evolução enquanto o produto é construído por um único time.
 ## Roadmap de construção
 
 1. Estruturar o repositório no GitHub ✅
-2. Provisionar o PostgreSQL e modelar o schema inicial
+2. Provisionar o PostgreSQL e modelar o schema inicial ✅
 3. Criar o projeto backend .NET com autenticação e o motor de cálculo
 4. Criar o projeto Web em Angular
 5. Criar os projetos mobile nativos (Android e iOS)
@@ -62,3 +62,6 @@ ritmo de evolução enquanto o produto é construído por um único time.
   na aplicação e Row Level Security no PostgreSQL.
 - Integração com gateways de pagamento é sempre feita atrás da interface
   `IPaymentProvider`, nunca diretamente contra o SDK do provedor.
+- **Todo frontend (Web, e qualquer outra interface) é construído via Lovable**
+  — o código Angular do diretório `/web` é gerado/gerenciado pelo Lovable, não
+  escrito manualmente fora dele.

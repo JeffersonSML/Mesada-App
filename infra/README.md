@@ -3,22 +3,25 @@
 Infraestrutura como código, schema/migrações do PostgreSQL e scripts de
 provisionamento.
 
-Status: a ser criado na Etapa 2 do roadmap (ver [README raiz](../README.md)).
-
-## Conteúdo planejado
+## Conteúdo
 
 ```
 infra/
   db/
-    migrations/     Migrações versionadas do schema (entidades de docs/especificacao.md)
-    rls/            Políticas de Row Level Security por familia_id
-    seed/           Dados de seed (categorias/tarefas padrão do sistema)
-  deploy/           Scripts/manifests de deploy do backend
+    migrations/     Schema versionado, em ordem numérica (ver db/README.md)
+    seed/           Dados de referência (planos e categorias padrão do sistema)
+    scripts/        Provisionamento e validação de isolamento multi-tenant
+    docker-compose.yml
+  deploy/           Scripts/manifests de deploy do backend (Etapa 6)
 ```
+
+Documentação completa do schema, do modelo de RLS e de como provisionar um
+banco localmente: [`db/README.md`](db/README.md).
 
 ## Isolamento multi-tenant
 
 O isolamento por `familia_id` é reforçado em duas camadas:
 
 1. Filtro explícito por `familia_id` na camada de aplicação (backend)
-2. Políticas de Row Level Security no PostgreSQL, como defesa em profundidade
+2. Row Level Security no PostgreSQL, como defesa em profundidade — validada
+   automaticamente por [`db/scripts/testar_isolamento_rls.sh`](db/scripts/testar_isolamento_rls.sh)
