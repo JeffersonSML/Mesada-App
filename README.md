@@ -20,7 +20,7 @@ ritmo de evolução enquanto o produto é construído por um único time.
 
 ```
 /backend          API .NET C# (RESTful, multi-tenant, motor de cálculo de mesada)
-/web              Aplicação Angular (construída/deployada via Lovable)
+/web              Painel web do Master — código vive no Lovable; ver web/README.md
 /mobile-android   App nativo Kotlin (uso exclusivo do usuário Comum/filho)
 /mobile-ios       App nativo Swift (uso exclusivo do usuário Comum/filho)
 /infra            Infraestrutura: schema/migrações PostgreSQL, IaC, scripts de deploy
@@ -34,7 +34,7 @@ ritmo de evolução enquanto o produto é construído por um único time.
 |---|---|
 | Backend | .NET C# — API RESTful multi-tenant |
 | Banco de dados | PostgreSQL com Row Level Security |
-| Web | Angular, construída via [Lovable](https://lovable.dev) |
+| Web | React + TypeScript, via [Lovable](https://lovable.dev) (ver [ADR 0004](docs/adr/0004-web-via-lovable.md)) |
 | Mobile Android | Kotlin nativo |
 | Mobile iOS | Swift nativo |
 | Offline (mobile) | SQLite local + fila de sincronização |
@@ -48,7 +48,7 @@ ritmo de evolução enquanto o produto é construído por um único time.
 1. Estruturar o repositório no GitHub ✅
 2. Provisionar o PostgreSQL e modelar o schema inicial ✅
 3. Criar o projeto backend .NET com autenticação e o motor de cálculo ✅
-4. Criar o projeto Web em Angular
+4. Criar o projeto Web (via Lovable) ✅
 5. Criar os projetos mobile nativos (Android e iOS)
 6. Configurar os serviços de infraestrutura (push, e-mail, storage, pagamento)
 7. Validar com dados da família do idealizador antes de abrir para outras famílias
