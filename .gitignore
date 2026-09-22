@@ -1,0 +1,48 @@
+# ==== .NET (backend) ====
+backend/**/bin/
+backend/**/obj/
+backend/**/*.user
+backend/**/*.suo
+backend/**/appsettings.*.local.json
+backend/**/.vs/
+
+# ==== Node / Angular (web) ====
+web/node_modules/
+web/dist/
+web/.angular/
+web/npm-debug.log*
+web/yarn-error.log*
+
+# ==== Android (mobile-android) ====
+mobile-android/.gradle/
+mobile-android/build/
+mobile-android/*/build/
+mobile-android/local.properties
+mobile-android/.idea/
+mobile-android/captures/
+mobile-android/*.iml
+mobile-android/.cxx/
+
+# ==== iOS (mobile-ios) ====
+mobile-ios/build/
+mobile-ios/DerivedData/
+mobile-ios/*.xcworkspace/xcuserdata/
+mobile-ios/*.xcodeproj/xcuserdata/
+mobile-ios/*.xcodeproj/project.xcworkspace/xcuserdata/
+mobile-ios/Pods/
+mobile-ios/.swiftpm/
+
+# ==== Infra / segredos ====
+infra/**/*.tfstate
+infra/**/*.tfstate.*
+infra/**/.terraform/
+**/.env
+**/.env.*
+!**/.env.example
+
+# ==== OS / editor ====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
