@@ -30,10 +30,20 @@ fi
 
 APP_CONN=("${SUPERUSER_CONN[@]}" -d "$PGDATABASE")
 
-echo "==> Aplicando migrações"
+echo "==> Garantindo tabela de controle de migrações"
+"${APP_CONN[@]}" -c "CREATE TABLE IF NOT EXISTS _migracoes_aplicadas (arquivo text PRIMARY KEY, aplicada_em timestamptz NOT NULL DEFAULT now())"
+
+echo "==> Aplicando migrações pendentes"
 for arquivo in "$DIR"/migrations/*.sql; do
-    echo "    -> $(basename "$arquivo")"
+    nome="$(basename "$arquivo")"
+    JA_APLICADA=$("${APP_CONN[@]}" -tAc "SELECT 1 FROM _migracoes_aplicadas WHERE arquivo = '$nome'")
+    if [ "$JA_APLICADA" = "1" ]; then
+        echo "    -> $nome (já aplicada, pulando)"
+        continue
+    fi
+    echo "    -> $nome"
     "${APP_CONN[@]}" -f "$arquivo"
+    "${APP_CONN[@]}" -c "INSERT INTO _migracoes_aplicadas (arquivo) VALUES ('$nome')"
 done
 
 echo "==> Definindo senha das roles de aplicação"
