@@ -13,4 +13,7 @@ public interface ITenantContextAccessor
 
     /// <summary>Id do UsuarioMaster autenticado na requisição atual, quando o papel for Master — usado por casos de uso que registram "quem fez" (ex.: ConviteAcesso.CriadoPor), não pelo TenantConnectionInterceptor.</summary>
     Guid? UsuarioMasterId { get; }
+
+    /// <summary>Id do UsuarioComum autenticado na requisição atual, quando o papel for Comum (ex.: marcar a própria execução de tarefa).</summary>
+    Guid? UsuarioComumId { get; }
 }

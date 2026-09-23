@@ -11,6 +11,16 @@ public sealed class AderenciasRepository(AppDbContext db) : IAderenciasRepositor
     public Task<TarefaUsuario?> ObterAsync(Guid tarefaId, Guid usuarioComumId, CancellationToken ct = default) =>
         db.TarefasUsuarios.SingleOrDefaultAsync(a => a.TarefaId == tarefaId && a.UsuarioComumId == usuarioComumId, ct);
 
+    public Task<TarefaUsuario?> ObterPorIdComTarefaAsync(Guid id, CancellationToken ct = default) =>
+        db.TarefasUsuarios.Include(a => a.Tarefa).SingleOrDefaultAsync(a => a.Id == id, ct);
+
+    public async Task<IReadOnlyList<TarefaUsuario>> ListarAtivasComTarefaPorUsuarioComumAsync(Guid usuarioComumId, CancellationToken ct = default) =>
+        await db.TarefasUsuarios
+            .Include(a => a.Tarefa)
+            .Where(a => a.UsuarioComumId == usuarioComumId && a.Ativo)
+            .OrderBy(a => a.Tarefa!.Nome)
+            .ToListAsync(ct);
+
     public Task<int> ContarAtivasPorUsuarioComumAsync(Guid usuarioComumId, CancellationToken ct = default) =>
         db.TarefasUsuarios.CountAsync(a => a.UsuarioComumId == usuarioComumId && a.Ativo, ct);
 

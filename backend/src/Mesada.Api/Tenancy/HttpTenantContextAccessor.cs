@@ -23,4 +23,13 @@ public sealed class HttpTenantContextAccessor(IHttpContextAccessor httpContextAc
             return Guid.TryParse(valor, out var id) ? id : null;
         }
     }
+
+    public Guid? UsuarioComumId
+    {
+        get
+        {
+            var valor = httpContextAccessor.HttpContext?.User.FindFirst(MesadaClaimTypes.UsuarioComumId)?.Value;
+            return Guid.TryParse(valor, out var id) ? id : null;
+        }
+    }
 }

@@ -4,6 +4,7 @@ using Mesada.Application.Abstractions;
 using Mesada.Application.Auth;
 using Mesada.Application.Categorias;
 using Mesada.Application.Convites;
+using Mesada.Application.Execucoes;
 using Mesada.Application.Familias;
 using Mesada.Application.Notificacoes;
 using Mesada.Application.Repositories;
@@ -93,6 +94,7 @@ public static class DependencyInjection
         services.AddScoped<ICategoriasRepository, CategoriasRepository>();
         services.AddScoped<ITarefasRepository, TarefasRepository>();
         services.AddScoped<IAderenciasRepository, AderenciasRepository>();
+        services.AddScoped<IExecucoesRepository, ExecucoesRepository>();
 
         services.AddScoped<AutenticarMasterUseCase>();
         services.AddScoped<ResgatarConviteComumUseCase>();
@@ -114,6 +116,11 @@ public static class DependencyInjection
         services.AddScoped<AdicionarAderenciaUseCase>();
         services.AddScoped<RemoverAderenciaUseCase>();
         services.AddScoped<SugerirValorTarefaUseCase>();
+        services.AddScoped<MarcarExecucaoUseCase>();
+        services.AddScoped<AprovarExecucaoUseCase>();
+        services.AddScoped<RejeitarExecucaoUseCase>();
+        services.AddScoped<ListarExecucoesPendentesUseCase>();
+        services.AddScoped<ListarMinhasTarefasUseCase>();
         services.AddScoped<ListarDestinatariosNotificacaoUseCase>();
         services.AddScoped<AdicionarDestinatarioNotificacaoUseCase>();
         services.AddScoped<RemoverDestinatarioNotificacaoUseCase>();
