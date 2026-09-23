@@ -120,6 +120,12 @@ public enum CanalNotificacao
     Email
 }
 
+public enum TipoDestinatarioNotificacao
+{
+    Email,
+    Telefone
+}
+
 public enum StatusTicket
 {
     Aberto,

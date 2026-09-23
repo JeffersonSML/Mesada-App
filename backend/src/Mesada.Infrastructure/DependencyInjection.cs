@@ -3,6 +3,7 @@ using Amazon.S3;
 using Mesada.Application.Abstractions;
 using Mesada.Application.Auth;
 using Mesada.Application.Familias;
+using Mesada.Application.Notificacoes;
 using Mesada.Application.Repositories;
 using Mesada.Infrastructure.Notifications;
 using Mesada.Infrastructure.Payments;
@@ -83,10 +84,14 @@ public static class DependencyInjection
         // Consultas e repositórios tenant-scoped (AppDbContext / mesada_app / RLS).
         services.AddScoped<ITenantUnitOfWork, AppUnitOfWork>();
         services.AddScoped<IFilhosDaFamiliaQuery, FilhosDaFamiliaQuery>();
+        services.AddScoped<IDestinatariosNotificacaoRepository, DestinatariosNotificacaoRepository>();
 
         services.AddScoped<AutenticarMasterUseCase>();
         services.AddScoped<ResgatarConviteComumUseCase>();
         services.AddScoped<ListarFilhosUseCase>();
+        services.AddScoped<ListarDestinatariosNotificacaoUseCase>();
+        services.AddScoped<AdicionarDestinatarioNotificacaoUseCase>();
+        services.AddScoped<RemoverDestinatarioNotificacaoUseCase>();
 
         services.AddInfraServicesExternas(configuration);
 

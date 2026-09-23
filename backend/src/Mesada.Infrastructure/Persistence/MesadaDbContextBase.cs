@@ -25,6 +25,7 @@ public abstract class MesadaDbContextBase(DbContextOptions options) : DbContext(
     public DbSet<HistoricoCobranca> HistoricoCobrancas => Set<HistoricoCobranca>();
     public DbSet<ConviteAcesso> ConvitesAcesso => Set<ConviteAcesso>();
     public DbSet<NotificacaoConfig> NotificacoesConfig => Set<NotificacaoConfig>();
+    public DbSet<NotificacaoDestinatario> NotificacaoDestinatarios => Set<NotificacaoDestinatario>();
     public DbSet<SuporteTicket> SuporteTickets => Set<SuporteTicket>();
     public DbSet<Administrador> Administradores => Set<Administrador>();
 

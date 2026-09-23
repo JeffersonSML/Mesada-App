@@ -32,6 +32,7 @@ public static class NpgsqlEnumMappings
         builder.MapEnum<StatusConvite>("status_convite", translator);
         builder.MapEnum<EventoNotificacao>("evento_notificacao", translator);
         builder.MapEnum<CanalNotificacao>("canal_notificacao", translator);
+        builder.MapEnum<TipoDestinatarioNotificacao>("tipo_destinatario_notificacao", translator);
         builder.MapEnum<StatusTicket>("status_ticket", translator);
         builder.MapEnum<NivelRelatorio>("nivel_relatorio", translator);
         builder.MapEnum<NivelSuporte>("nivel_suporte", translator);

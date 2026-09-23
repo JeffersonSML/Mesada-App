@@ -266,6 +266,18 @@ public class NotificacaoConfigConfiguration : IEntityTypeConfiguration<Notificac
     }
 }
 
+public class NotificacaoDestinatarioConfiguration : IEntityTypeConfiguration<NotificacaoDestinatario>
+{
+    public void Configure(EntityTypeBuilder<NotificacaoDestinatario> builder)
+    {
+        builder.ToTable("notificacao_destinatarios");
+        builder.HasKey(n => n.Id);
+        builder.HasIndex(n => new { n.FamiliaId, n.Tipo, n.Valor }).IsUnique();
+        builder.Property(n => n.CreatedAt).ValueGeneratedOnAdd();
+        builder.Property(n => n.UpdatedAt).ValueGeneratedOnAddOrUpdate();
+    }
+}
+
 public class SuporteTicketConfiguration : IEntityTypeConfiguration<SuporteTicket>
 {
     public void Configure(EntityTypeBuilder<SuporteTicket> builder)
