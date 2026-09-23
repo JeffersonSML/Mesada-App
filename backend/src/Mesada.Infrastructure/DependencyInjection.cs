@@ -85,11 +85,14 @@ public static class DependencyInjection
         services.AddScoped<ITenantUnitOfWork, AppUnitOfWork>();
         services.AddScoped<IFilhosDaFamiliaQuery, FilhosDaFamiliaQuery>();
         services.AddScoped<IDestinatariosNotificacaoRepository, DestinatariosNotificacaoRepository>();
+        services.AddScoped<IFilhosRepository, FilhosRepository>();
 
         services.AddScoped<AutenticarMasterUseCase>();
         services.AddScoped<ResgatarConviteComumUseCase>();
         services.AddScoped<CriarFamiliaUseCase>();
         services.AddScoped<ListarFilhosUseCase>();
+        services.AddScoped<CriarFilhoUseCase>();
+        services.AddScoped<AtualizarFilhoUseCase>();
         services.AddScoped<ListarDestinatariosNotificacaoUseCase>();
         services.AddScoped<AdicionarDestinatarioNotificacaoUseCase>();
         services.AddScoped<RemoverDestinatarioNotificacaoUseCase>();
