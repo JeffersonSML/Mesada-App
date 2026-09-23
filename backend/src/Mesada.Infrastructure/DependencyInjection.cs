@@ -2,6 +2,7 @@ using Amazon;
 using Amazon.S3;
 using Mesada.Application.Abstractions;
 using Mesada.Application.Auth;
+using Mesada.Application.Categorias;
 using Mesada.Application.Convites;
 using Mesada.Application.Familias;
 using Mesada.Application.Notificacoes;
@@ -88,6 +89,7 @@ public static class DependencyInjection
         services.AddScoped<IDestinatariosNotificacaoRepository, DestinatariosNotificacaoRepository>();
         services.AddScoped<IFilhosRepository, FilhosRepository>();
         services.AddScoped<IConvitesRepository, ConvitesRepository>();
+        services.AddScoped<ICategoriasRepository, CategoriasRepository>();
 
         services.AddScoped<AutenticarMasterUseCase>();
         services.AddScoped<ResgatarConviteComumUseCase>();
@@ -98,6 +100,10 @@ public static class DependencyInjection
         services.AddScoped<ListarConvitesUseCase>();
         services.AddScoped<CriarConviteUseCase>();
         services.AddScoped<RevogarConviteUseCase>();
+        services.AddScoped<ListarCategoriasUseCase>();
+        services.AddScoped<CriarCategoriaUseCase>();
+        services.AddScoped<AtualizarCategoriaUseCase>();
+        services.AddScoped<RemoverCategoriaUseCase>();
         services.AddScoped<ListarDestinatariosNotificacaoUseCase>();
         services.AddScoped<AdicionarDestinatarioNotificacaoUseCase>();
         services.AddScoped<RemoverDestinatarioNotificacaoUseCase>();
