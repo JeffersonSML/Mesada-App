@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Referência das chaves que o Info.plist do target precisa ter — não é
+  usado pelo build (não existe .xcodeproj aqui, ver mobile-ios/README.md).
+  Ao criar o projeto no Xcode, copiar estas entradas para o Info.plist real
+  do target (ou para "Custom iOS Target Properties" no editor de target).
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSCameraUsageDescription</key>
+    <string>Precisamos da câmera para você registrar a foto de evidência ao concluir uma tarefa.</string>
+    <key>NSFaceIDUsageDescription</key>
+    <string>Use o Face ID para desbloquear o app rapidamente, com mais segurança que um PIN.</string>
+</dict>
+</plist>

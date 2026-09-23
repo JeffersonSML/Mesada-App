@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Permite HTTP (cleartext) apenas para 10.0.2.2 — o alias do emulador
+     Android para o localhost da máquina host, usado em desenvolvimento
+     contra o backend rodando localmente. Builds de produção devem apontar
+     API_BASE_URL para um host HTTPS e este bloco deixa de ser necessário. -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+    </domain-config>
+</network-security-config>

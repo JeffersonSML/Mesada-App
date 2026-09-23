@@ -49,7 +49,7 @@ ritmo de evolução enquanto o produto é construído por um único time.
 2. Provisionar o PostgreSQL e modelar o schema inicial ✅
 3. Criar o projeto backend .NET com autenticação e o motor de cálculo ✅
 4. Criar o projeto Web (via Lovable) ✅
-5. Criar os projetos mobile nativos (Android e iOS)
+5. Criar os projetos mobile nativos (Android e iOS) ✅ (não compilados neste ambiente — ver [ADR 0005](docs/adr/0005-mobile-restricoes-de-ambiente.md))
 6. Configurar os serviços de infraestrutura (push, e-mail, storage, pagamento)
 7. Validar com dados da família do idealizador antes de abrir para outras famílias
 
