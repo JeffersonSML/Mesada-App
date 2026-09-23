@@ -88,6 +88,7 @@ public static class DependencyInjection
 
         services.AddScoped<AutenticarMasterUseCase>();
         services.AddScoped<ResgatarConviteComumUseCase>();
+        services.AddScoped<CriarFamiliaUseCase>();
         services.AddScoped<ListarFilhosUseCase>();
         services.AddScoped<ListarDestinatariosNotificacaoUseCase>();
         services.AddScoped<AdicionarDestinatarioNotificacaoUseCase>();
