@@ -46,19 +46,34 @@ O módulo Administrador (ver
 é tratado como um sistema/projeto Lovable separado, não faz parte deste
 painel do Master.
 
-## Estado atual (Etapa 4)
+## Estado atual (Etapa 4 — concluída)
+
+Build inicial do Lovable finalizada (`commit ececf747`). Stack efetiva
+escolhida pelo próprio Lovable dentro de React/TypeScript: TanStack Router
+(rotas), React Query (estado de chamadas à API), Tailwind com paleta em
+`oklch`, componentes `shadcn/ui`.
 
 Implementado, consumindo a API real:
-- Login do Master
-- Layout autenticado com navegação para todas as telas da spec
-- Gestão de Filhos (lista real via `GET /api/filhos`)
-- Dashboard da Família (resumo por filho, reaproveitando `/api/filhos`)
+- Login do Master (`POST /api/auth/master/login`, JWT em `localStorage`,
+  redirecionamento automático para telas protegidas)
+- Layout autenticado responsivo (navegação lateral no desktop, menu
+  suspenso no mobile) com toda a navegação da spec, tema claro/escuro
+- Gestão de Filhos (lista real via `GET /api/filhos`, destaque visual
+  quando `saldoDevedorAcumulado > 0`)
+- Dashboard da Família (cards de resumo por filho reaproveitando
+  `/api/filhos`, seção de tarefas pendentes como placeholder)
 
 Como placeholder "Em breve" (backend ainda não expõe os endpoints):
 Aprovações Pendentes, Extrato e Histórico, Gráficos de Desempenho, Controle
 de Acessos, Assinatura. Conforme os endpoints correspondentes forem criados
 no backend, a Project Knowledge do Lovable deve ser atualizada e uma nova
 mensagem enviada ao projeto para implementar a tela de verdade.
+
+**Ainda não validado neste ambiente:** o preview do Lovable rodando contra o
+backend real — o `.NET` só está acessível localmente neste ambiente de
+desenvolvimento (sem deploy público, isso é Etapa 6), então o login e a
+listagem de filhos não puderam ser testados fim a fim contra o preview
+hospedado. A lógica do fluxo foi revisada por leitura, não por execução.
 
 ## Notas
 
