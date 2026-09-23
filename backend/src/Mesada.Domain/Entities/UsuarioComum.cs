@@ -9,6 +9,9 @@ public class UsuarioComum
     public string Nome { get; set; } = default!;
     public string? Apelido { get; set; }
     public CicloPeriodicidade CicloFechamento { get; set; } = CicloPeriodicidade.Mensal;
+    public decimal MesadaBase { get; set; }
+    /// <summary>Taxa de conversão de pontos em R$ — só usado por tarefas deste filho em ModoCalculo.Pontos.</summary>
+    public decimal? ValorPonto { get; set; }
     public decimal SaldoDevedorAcumulado { get; set; }
     public string? DispositivoVinculado { get; set; }
     public string Status { get; set; } = "ativo";

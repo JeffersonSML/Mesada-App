@@ -45,6 +45,8 @@ public class UsuarioComumConfiguration : IEntityTypeConfiguration<UsuarioComum>
     {
         builder.ToTable("usuarios_comuns");
         builder.HasKey(c => c.Id);
+        builder.Property(c => c.MesadaBase).HasPrecision(10, 2);
+        builder.Property(c => c.ValorPonto).HasPrecision(10, 4);
         builder.Property(c => c.SaldoDevedorAcumulado).HasPrecision(10, 2);
         builder.Property(c => c.CreatedAt).ValueGeneratedOnAdd();
         builder.Property(c => c.UpdatedAt).ValueGeneratedOnAddOrUpdate();
