@@ -80,7 +80,8 @@ public static class DependencyInjection
         services.AddScoped<IFamiliaRepository, AdminFamiliaRepository>();
         services.AddScoped<IUnitOfWork, AdminUnitOfWork>();
 
-        // Consultas tenant-scoped (AppDbContext / mesada_app / RLS).
+        // Consultas e repositórios tenant-scoped (AppDbContext / mesada_app / RLS).
+        services.AddScoped<ITenantUnitOfWork, AppUnitOfWork>();
         services.AddScoped<IFilhosDaFamiliaQuery, FilhosDaFamiliaQuery>();
 
         services.AddScoped<AutenticarMasterUseCase>();

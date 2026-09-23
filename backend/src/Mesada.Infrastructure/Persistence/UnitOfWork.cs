@@ -8,7 +8,7 @@ public sealed class AdminUnitOfWork(AdminDbContext db) : IUnitOfWork
     public Task<int> SaveChangesAsync(CancellationToken ct = default) => db.SaveChangesAsync(ct);
 }
 
-public sealed class AppUnitOfWork(AppDbContext db) : IUnitOfWork
+public sealed class AppUnitOfWork(AppDbContext db) : ITenantUnitOfWork
 {
     public Task<int> SaveChangesAsync(CancellationToken ct = default) => db.SaveChangesAsync(ct);
 }
