@@ -50,7 +50,7 @@ dotnet test                              # unitários + integração (precisa do
 dotnet test tests/Mesada.Domain.Tests    # só o motor de cálculo, sem banco
 ```
 
-37 testes no total. Os testes de integração usam o mesmo Postgres
+77 testes no total (27 unitários + 50 de integração). Os testes de integração usam o mesmo Postgres
 provisionado por `infra/db` — criam família(s) de teste com o prefixo
 `[teste-e2e]`, batem na Api real via `WebApplicationFactory<Program>` e
 removem os dados ao final (`IAsyncLifetime.DisposeAsync`). Os testes dos
@@ -101,12 +101,41 @@ API real, não contra o provedor de verdade. Ver
 [`docs/adr/0006-infra-servicos-externos.md`](../docs/adr/0006-infra-servicos-externos.md)
 para o que foi (e não foi) provado.
 
+## Endpoints (Etapa 7 — orquestração HTTP dos casos de uso)
+
+Toda a superfície abaixo é tenant-scoped (`AppDbContext`/`mesada_app`/RLS),
+exceto onde indicado como pré-tenant (`AdminDbContext`/`mesada_admin`).
+
+- **Auth** (pré-tenant): `POST /api/auth/master/login`,
+  `POST /api/auth/convites/{codigo}/resgatar`.
+- **Signup** (pré-tenant): `POST /api/familias` — cria a Família e o primeiro
+  Master (sempre financeiro), já devolvendo um token.
+- **Filhos**: `GET/POST/PUT /api/filhos`.
+- **Convites**: `GET/POST/DELETE(revogar) /api/convites` — gerados pelo
+  Master, resgatados via `POST /api/auth/convites/{codigo}/resgatar`.
+- **Categorias**: `GET/POST/PUT/DELETE /api/categorias` — modelo híbrido
+  (defaults do sistema + customizadas da família); remoção é lógica.
+- **Tarefas**: `GET/POST/PUT/DELETE /api/tarefas`,
+  `POST/DELETE /api/tarefas/{id}/aderencias`,
+  `GET /api/tarefas/sugestao?usuarioComumId=&modoCalculo=`.
+- **Execuções**: `POST /api/execucoes` (Comum marca conclusão),
+  `POST /api/execucoes/{id}/aprovar`, `POST /api/execucoes/{id}/rejeitar`
+  (Master), `GET /api/execucoes/pendentes` (Master),
+  `GET /api/tarefas/minhas` (Comum).
+- **Ciclos**: `POST /api/ciclos/fechar`, `GET /api/ciclos/historico`,
+  `GET /api/ciclos/atual` (prévia sem persistir, desde o fim do último
+  ciclo fechado).
+- **Notificações**: `GET/POST/DELETE /api/notificacoes/destinatarios` —
+  e-mails/telefones extras que recebem os alertas da família, além do
+  cadastro principal do Master/Comum (não confundir com credenciais dos
+  provedores Resend/FCM, que são segredo de infraestrutura via ambiente).
+
 ## Ainda não implementado (próximos passos do backend)
 
-- CRUD de categorias/tarefas, aprovação de execuções, fechamento de ciclo via
-  endpoint (o motor de cálculo já existe e está testado; falta a orquestração/HTTP).
-- Cadastro de nova família (signup) e criação de convites pelo Master.
 - Módulo Administrador (endpoints — o `AdminDbContext` já existe e já tem
-  `BYPASSRLS`, falta a superfície HTTP).
+  `BYPASSRLS`, falta a superfície HTTP), e endpoints de Planos/Assinatura.
+- Cálculo automático das datas de um ciclo a partir de
+  `CicloPeriodicidade` (hoje o Master informa `dataInicio`/`dataFim`
+  explicitamente ao fechar) — depende de um agendador de fechamento.
 - Validação com credenciais reais dos quatro serviços externos (Pagar.me,
   Resend, Firebase, S3/MinIO) — depende de contas que ainda não existem.
