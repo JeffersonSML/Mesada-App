@@ -1,0 +1,77 @@
+# Stack de referência para um deploy self-hosted (VPS própria) do backend:
+# Postgres + MinIO (S3-compatível) + a API. Não é a única forma de rodar em
+# produção — plataformas gerenciadas (Railway, Fly.io, Azure App Service)
+# dispensam o Postgres/MinIO daqui em troca de um banco e um storage
+# gerenciados; ver deploy/README.md.
+#
+# Uso:
+#   cp .env.example .env   # preencha as senhas/chaves
+#   docker compose up -d db
+#   # rode as migrações uma vez (a partir da raiz do repo, com o host apontando pra localhost:5432):
+#   PGHOST=127.0.0.1 PGSUPERUSER_PASSWORD=$PGSUPERUSER_PASSWORD \
+#     MESADA_APP_DB_PASSWORD=$MESADA_APP_DB_PASSWORD MESADA_ADMIN_DB_PASSWORD=$MESADA_ADMIN_DB_PASSWORD \
+#     ../db/scripts/provisionar.sh
+#   docker compose up -d
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${PGDATABASE:-mesada}
+      POSTGRES_USER: ${PGSUPERUSER:-postgres}
+      POSTGRES_PASSWORD: ${PGSUPERUSER_PASSWORD:?defina PGSUPERUSER_PASSWORD}
+    volumes:
+      - mesada_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # exposto só para rodar provisionar.sh do host; feche em produção se não precisar mais
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PGSUPERUSER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:?defina S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:?defina S3_SECRET_KEY}
+    volumes:
+      - mesada_minio_data:/data
+    ports:
+      - "9000:9000" # API S3
+      - "9001:9001" # console web
+
+  api:
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__MesadaApp: "Host=db;Port=5432;Database=${PGDATABASE:-mesada};Username=mesada_app;Password=${MESADA_APP_DB_PASSWORD:?defina MESADA_APP_DB_PASSWORD};Pooling=false"
+      ConnectionStrings__MesadaAdmin: "Host=db;Port=5432;Database=${PGDATABASE:-mesada};Username=mesada_admin;Password=${MESADA_ADMIN_DB_PASSWORD:?defina MESADA_ADMIN_DB_PASSWORD}"
+      Jwt__Chave: ${JWT_CHAVE:?defina JWT_CHAVE (32+ bytes aleatórios)}
+      PagarMe__SecretKey: ${PAGARME_SECRET_KEY:-}
+      Email__ResendApiKey: ${RESEND_API_KEY:-}
+      Email__RemetenteEmail: ${EMAIL_REMETENTE:-nao-responda@mesadaapp.com.br}
+      S3__AccessKey: ${S3_ACCESS_KEY:?defina S3_ACCESS_KEY}
+      S3__SecretKey: ${S3_SECRET_KEY:?defina S3_SECRET_KEY}
+      S3__BucketName: ${S3_BUCKET_NAME:-mesada-evidencias}
+      S3__ServiceUrl: "http://minio:9000"
+      Fcm__CaminhoServiceAccount: /run/secrets/fcm_service_account
+    secrets:
+      - fcm_service_account
+    ports:
+      - "8080:8080"
+
+volumes:
+  mesada_pgdata:
+  mesada_minio_data:
+
+secrets:
+  fcm_service_account:
+    file: ./fcm-service-account.json

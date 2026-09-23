@@ -12,11 +12,12 @@ infra/
     seed/           Dados de referência (planos e categorias padrão do sistema)
     scripts/        Provisionamento e validação de isolamento multi-tenant
     docker-compose.yml
-  deploy/           Scripts/manifests de deploy do backend (Etapa 6)
+  deploy/           Stack de deploy (Docker Compose) do backend — ver deploy/README.md
 ```
 
 Documentação completa do schema, do modelo de RLS e de como provisionar um
-banco localmente: [`db/README.md`](db/README.md).
+banco localmente: [`db/README.md`](db/README.md). Artefatos de deploy do
+backend (não publicados — só preparados): [`deploy/README.md`](deploy/README.md).
 
 ## Isolamento multi-tenant
 

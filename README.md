@@ -39,7 +39,7 @@ ritmo de evolução enquanto o produto é construído por um único time.
 | Mobile iOS | Swift nativo |
 | Offline (mobile) | SQLite local + fila de sincronização |
 | Autenticação | OAuth2/JWT + biometria no mobile |
-| Pagamentos | Asaas ou Stripe, atrás de `IPaymentProvider` |
+| Pagamentos | Stone/Pagar.me, atrás de `IPaymentProvider` (ver [ADR 0006](docs/adr/0006-infra-servicos-externos.md)) |
 | Notificações | Firebase Cloud Messaging (push) + SendGrid/Resend (e-mail) |
 | Storage de evidências | Compatível com S3 |
 
@@ -50,7 +50,7 @@ ritmo de evolução enquanto o produto é construído por um único time.
 3. Criar o projeto backend .NET com autenticação e o motor de cálculo ✅
 4. Criar o projeto Web (via Lovable) ✅
 5. Criar os projetos mobile nativos (Android e iOS) ✅ (não compilados neste ambiente — ver [ADR 0005](docs/adr/0005-mobile-restricoes-de-ambiente.md))
-6. Configurar os serviços de infraestrutura (push, e-mail, storage, pagamento)
+6. Configurar os serviços de infraestrutura (push, e-mail, storage, pagamento) ✅ (implementados, sem credenciais reais neste ambiente — ver [ADR 0006](docs/adr/0006-infra-servicos-externos.md))
 7. Validar com dados da família do idealizador antes de abrir para outras famílias
 
 ## Convenções

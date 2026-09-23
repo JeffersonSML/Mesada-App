@@ -50,10 +50,13 @@ dotnet test                              # unitários + integração (precisa do
 dotnet test tests/Mesada.Domain.Tests    # só o motor de cálculo, sem banco
 ```
 
-Os testes de integração usam o mesmo Postgres provisionado por `infra/db` —
-criam família(s) de teste com o prefixo `[teste-e2e]`, batem na Api real via
-`WebApplicationFactory<Program>` e removem os dados ao final
-(`IAsyncLifetime.DisposeAsync`).
+37 testes no total. Os testes de integração usam o mesmo Postgres
+provisionado por `infra/db` — criam família(s) de teste com o prefixo
+`[teste-e2e]`, batem na Api real via `WebApplicationFactory<Program>` e
+removem os dados ao final (`IAsyncLifetime.DisposeAsync`). Os testes dos
+adapters de Pagar.me/Resend/S3 sobem um servidor HTTP local que imita a API
+real de cada provedor — nenhum tem chave de sandbox neste ambiente (ver
+[`docs/adr/0006-*.md`](../docs/adr/0006-infra-servicos-externos.md)).
 
 ## O que já está implementado (Etapa 3)
 
@@ -80,12 +83,30 @@ criam família(s) de teste com o prefixo `[teste-e2e]`, batem na Api real via
 Decisões e trade-offs desta etapa registrados em
 [`docs/adr/0003-autenticacao-e-tenant-context.md`](../docs/adr/0003-autenticacao-e-tenant-context.md).
 
+## O que já está implementado (Etapa 6)
+
+- **Pagamento**: `IPaymentProvider` implementado sobre o SDK oficial
+  Stone/Pagar.me (`Mesada.Infrastructure.Payments.PagarMePaymentProvider`).
+- **E-mail**: `IEmailSender` sobre o SDK oficial Resend.
+- **Push**: `IPushNotificationSender` sobre o SDK oficial FirebaseAdmin (FCM).
+- **Storage de evidências**: `IEvidenceStorageService` sobre o AWS SDK
+  (`AWSSDK.S3`), apontável para qualquer S3-compatível via `S3:ServiceUrl`
+  (MinIO em desenvolvimento).
+- **Deploy**: `Dockerfile` multi-stage nesta pasta; stack de referência
+  (Postgres + MinIO + API) em [`infra/deploy`](../infra/deploy).
+
+Nenhum dos quatro provedores tem credencial real configurada neste
+ambiente — cada um foi validado contra um servidor HTTP local que imita a
+API real, não contra o provedor de verdade. Ver
+[`docs/adr/0006-infra-servicos-externos.md`](../docs/adr/0006-infra-servicos-externos.md)
+para o que foi (e não foi) provado.
+
 ## Ainda não implementado (próximos passos do backend)
 
 - CRUD de categorias/tarefas, aprovação de execuções, fechamento de ciclo via
   endpoint (o motor de cálculo já existe e está testado; falta a orquestração/HTTP).
 - Cadastro de nova família (signup) e criação de convites pelo Master.
-- `IPaymentProvider` concreto (Asaas/Stripe), storage S3 de evidências,
-  notificações (FCM/e-mail) — Etapa 6.
 - Módulo Administrador (endpoints — o `AdminDbContext` já existe e já tem
   `BYPASSRLS`, falta a superfície HTTP).
+- Validação com credenciais reais dos quatro serviços externos (Pagar.me,
+  Resend, Firebase, S3/MinIO) — depende de contas que ainda não existem.

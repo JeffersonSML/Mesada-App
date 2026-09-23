@@ -37,6 +37,7 @@ mobile-ios/**/.build/
 infra/**/*.tfstate
 infra/**/*.tfstate.*
 infra/**/.terraform/
+infra/deploy/fcm-service-account.json
 **/.env
 **/.env.*
 !**/.env.example
