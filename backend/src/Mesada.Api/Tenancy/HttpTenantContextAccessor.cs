@@ -32,4 +32,17 @@ public sealed class HttpTenantContextAccessor(IHttpContextAccessor httpContextAc
             return Guid.TryParse(valor, out var id) ? id : null;
         }
     }
+
+    public Guid? AdministradorId
+    {
+        get
+        {
+            var valor = httpContextAccessor.HttpContext?.User.FindFirst(MesadaClaimTypes.AdministradorId)?.Value;
+            return Guid.TryParse(valor, out var id) ? id : null;
+        }
+    }
+
+    public bool AdministradorEhOwner =>
+        bool.TryParse(httpContextAccessor.HttpContext?.User.FindFirst(MesadaClaimTypes.GrupoAdministradorSistema)?.Value, out var ehOwner)
+        && ehOwner;
 }

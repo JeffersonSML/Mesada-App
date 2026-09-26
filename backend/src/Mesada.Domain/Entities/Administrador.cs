@@ -9,6 +9,11 @@ public class Administrador
     public string SenhaHash { get; set; } = default!;
     public string Permissoes { get; set; } = "{}"; // jsonb bruto
     public string Status { get; set; } = "ativo";
+    public Guid? GrupoId { get; set; }
+    /// <summary>true logo após criação/reset de senha — force a troca antes de liberar qualquer outra ação.</summary>
+    public bool DeveTrocarSenha { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
+
+    public GrupoAdministrador? Grupo { get; set; }
 }

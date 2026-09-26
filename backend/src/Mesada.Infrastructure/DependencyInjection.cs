@@ -2,6 +2,7 @@ using Amazon;
 using Amazon.S3;
 using Mesada.Application.Abstractions;
 using Mesada.Application.Auth;
+using Mesada.Application.Administracao;
 using Mesada.Application.Categorias;
 using Mesada.Application.Ciclos;
 using Mesada.Application.Convites;
@@ -84,6 +85,8 @@ public static class DependencyInjection
         services.AddScoped<IUsuarioComumRepository, AdminUsuarioComumRepository>();
         services.AddScoped<IConviteAcessoRepository, AdminConviteAcessoRepository>();
         services.AddScoped<IFamiliaRepository, AdminFamiliaRepository>();
+        services.AddScoped<IAdministradorRepository, AdminAdministradorRepository>();
+        services.AddScoped<IGrupoAdministradorRepository, AdminGrupoAdministradorRepository>();
         services.AddScoped<IUnitOfWork, AdminUnitOfWork>();
 
         // Consultas e repositórios tenant-scoped (AppDbContext / mesada_app / RLS).
@@ -101,6 +104,17 @@ public static class DependencyInjection
         services.AddScoped<AutenticarMasterUseCase>();
         services.AddScoped<ResgatarConviteComumUseCase>();
         services.AddScoped<CriarFamiliaUseCase>();
+        services.AddScoped<AutenticarAdministradorUseCase>();
+        services.AddScoped<TrocarSenhaAdministradorUseCase>();
+        services.AddScoped<AtualizarEmailProprioAdministradorUseCase>();
+        services.AddScoped<ListarAdministradoresUseCase>();
+        services.AddScoped<ConvidarAdministradorUseCase>();
+        services.AddScoped<AtualizarAdministradorUseCase>();
+        services.AddScoped<DesativarAdministradorUseCase>();
+        services.AddScoped<ListarGruposAdministradorUseCase>();
+        services.AddScoped<CriarGrupoAdministradorUseCase>();
+        services.AddScoped<AtualizarGrupoAdministradorUseCase>();
+        services.AddScoped<RemoverGrupoAdministradorUseCase>();
         services.AddScoped<ListarFilhosUseCase>();
         services.AddScoped<CriarFilhoUseCase>();
         services.AddScoped<AtualizarFilhoUseCase>();

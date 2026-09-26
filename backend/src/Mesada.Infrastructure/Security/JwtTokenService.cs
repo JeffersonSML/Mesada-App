@@ -35,6 +35,7 @@ public sealed class JwtTokenService(IOptions<JwtOptions> options, IClock clock) 
             new Claim(MesadaClaimTypes.DispositivoId, dispositivoVinculado),
         ]);
 
+    /// <summary>Espera <paramref name="administrador"/>.Grupo já carregado (ver IAdministradorRepository.ObterPorEmailComGrupoAsync) — os claims de grupo vêm dele, não de uma consulta adicional.</summary>
     public string GerarTokenAdministrador(Administrador administrador) => GerarToken(
         expiracaoMinutos: _options.ExpiracaoMinutosAdministrador,
         claims:
@@ -42,6 +43,8 @@ public sealed class JwtTokenService(IOptions<JwtOptions> options, IClock clock) 
             new Claim(JwtRegisteredClaimNames.Sub, administrador.Id.ToString()),
             new Claim(MesadaClaimTypes.AdministradorId, administrador.Id.ToString()),
             new Claim(MesadaClaimTypes.Papel, MesadaPapeis.Administrador),
+            new Claim(MesadaClaimTypes.GrupoAdministradorId, administrador.GrupoId?.ToString() ?? string.Empty),
+            new Claim(MesadaClaimTypes.GrupoAdministradorSistema, (administrador.Grupo?.Sistema ?? false).ToString()),
         ]);
 
     private string GerarToken(int expiracaoMinutos, Claim[] claims)

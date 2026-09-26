@@ -16,4 +16,10 @@ public interface ITenantContextAccessor
 
     /// <summary>Id do UsuarioComum autenticado na requisição atual, quando o papel for Comum (ex.: marcar a própria execução de tarefa).</summary>
     Guid? UsuarioComumId { get; }
+
+    /// <summary>Id do Administrador autenticado na requisição atual, quando o papel for admin — painel administrativo interno, fora do escopo de qualquer Familia.</summary>
+    Guid? AdministradorId { get; }
+
+    /// <summary>true quando o Administrador autenticado pertence ao grupo sistema (Owner) — acesso total, sem checar o jsonb de permissões de nenhum grupo.</summary>
+    bool AdministradorEhOwner { get; }
 }

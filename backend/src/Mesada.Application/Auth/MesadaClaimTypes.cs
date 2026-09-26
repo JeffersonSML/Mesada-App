@@ -13,6 +13,9 @@ public static class MesadaClaimTypes
     public const string UsuarioMasterId = "usuario_master_id";
     public const string UsuarioComumId = "usuario_comum_id";
     public const string AdministradorId = "administrador_id";
+    public const string GrupoAdministradorId = "grupo_administrador_id";
+    /// <summary>"true" quando o grupo do Administrador é o grupo sistema (Owner) — acesso total, sem checar permissoes jsonb.</summary>
+    public const string GrupoAdministradorSistema = "grupo_administrador_sistema";
     public const string IsFinanceiro = "is_financeiro";
     public const string DispositivoId = "dispositivo_id";
 }

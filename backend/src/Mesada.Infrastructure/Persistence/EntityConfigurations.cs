@@ -304,5 +304,23 @@ public class AdministradorConfiguration : IEntityTypeConfiguration<Administrador
         builder.Property(a => a.Permissoes).HasColumnType("jsonb");
         builder.Property(a => a.CreatedAt).ValueGeneratedOnAdd();
         builder.Property(a => a.UpdatedAt).ValueGeneratedOnAddOrUpdate();
+
+        builder.HasOne(a => a.Grupo)
+            .WithMany()
+            .HasForeignKey(a => a.GrupoId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}
+
+public class GrupoAdministradorConfiguration : IEntityTypeConfiguration<GrupoAdministrador>
+{
+    public void Configure(EntityTypeBuilder<GrupoAdministrador> builder)
+    {
+        builder.ToTable("grupos_administrador");
+        builder.HasKey(g => g.Id);
+        builder.HasIndex(g => g.Nome).IsUnique();
+        builder.Property(g => g.Permissoes).HasColumnType("jsonb");
+        builder.Property(g => g.CreatedAt).ValueGeneratedOnAdd();
+        builder.Property(g => g.UpdatedAt).ValueGeneratedOnAddOrUpdate();
     }
 }
