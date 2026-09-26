@@ -10,4 +10,4 @@ public sealed record ConviteResponse(
     StatusConvite Status,
     DateTimeOffset ExpiraEm);
 
-public sealed record CriarConviteRequest(Guid UsuarioComumId);
+public sealed record CriarConviteRequest(PapelConvite PapelAlvo, Guid? UsuarioComumId, string? NomeConvidado);

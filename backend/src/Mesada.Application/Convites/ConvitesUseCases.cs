@@ -14,10 +14,13 @@ public sealed class ListarConvitesUseCase(IConvitesRepository convites)
 }
 
 /// <summary>
-/// Gera um convite de acesso para um filho (papel Comum) resgatar no app
-/// mobile (docs/especificacao.md#fluxo-de-convite). Convite de Master
-/// (criação de conta própria com e-mail/senha) permanece fora de escopo,
-/// como já documentado em ResgatarConviteComumUseCase.
+/// Gera um convite de acesso (docs/especificacao.md#fluxo-de-convite) —
+/// para um filho (papel Comum) resgatar no app mobile, vinculando a um
+/// UsuarioComum já cadastrado, ou para um segundo responsável (papel
+/// Master) criar a própria conta com e-mail/senha na Web
+/// (ResgatarConviteMasterUseCase). Exatamente um entre
+/// <paramref name="usuarioComumId"/> (Comum) e <paramref name="nomeConvidado"/>
+/// (Master) deve ser informado, conforme <paramref name="papelAlvo"/>.
 /// </summary>
 public sealed class CriarConviteUseCase(
     IConvitesRepository convites,
@@ -30,10 +33,20 @@ public sealed class CriarConviteUseCase(
     private const string AlfabetoCodigo = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // sem caracteres ambíguos (0/O, 1/I/L)
     private const int TamanhoCodigo = 8;
 
-    public async Task<ConviteAcesso> ExecutarAsync(Guid usuarioComumId, CancellationToken ct = default)
+    public async Task<ConviteAcesso> ExecutarAsync(
+        PapelConvite papelAlvo, Guid? usuarioComumId, string? nomeConvidado, CancellationToken ct = default)
     {
-        _ = await filhos.ObterPorIdAsync(usuarioComumId, ct)
-            ?? throw new RecursoNaoEncontradoException("Filho não encontrado.");
+        if (papelAlvo == PapelConvite.Comum)
+        {
+            if (usuarioComumId is null)
+                throw new ValidacaoException("Convite de filho (Comum) exige 'usuarioComumId'.");
+            _ = await filhos.ObterPorIdAsync(usuarioComumId.Value, ct)
+                ?? throw new RecursoNaoEncontradoException("Filho não encontrado.");
+        }
+        else if (string.IsNullOrWhiteSpace(nomeConvidado))
+        {
+            throw new ValidacaoException("Convite de responsável (Master) exige 'nomeConvidado'.");
+        }
 
         var masterId = tenantContext.UsuarioMasterId
             ?? throw new InvalidOperationException("Requisição sem usuário Master autenticado.");
@@ -43,8 +56,9 @@ public sealed class CriarConviteUseCase(
             Id = Guid.NewGuid(),
             FamiliaId = tenantContext.FamiliaId ?? throw new InvalidOperationException("Requisição sem contexto de família."),
             Codigo = GerarCodigo(),
-            PapelAlvo = PapelConvite.Comum,
-            UsuarioComumId = usuarioComumId,
+            PapelAlvo = papelAlvo,
+            UsuarioComumId = papelAlvo == PapelConvite.Comum ? usuarioComumId : null,
+            NomeConvidado = papelAlvo == PapelConvite.Master ? nomeConvidado : null,
             Status = StatusConvite.Pendente,
             CriadoPor = masterId,
             ExpiraEm = clock.UtcNow.Add(ValidadeConvite),

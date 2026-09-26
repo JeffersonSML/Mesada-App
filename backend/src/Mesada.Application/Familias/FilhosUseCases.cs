@@ -45,6 +45,21 @@ public sealed class CriarFilhoUseCase(
     }
 }
 
+/// <summary>Exclusão lógica (status='inativo') — filhos têm histórico de tarefas/execuções/ciclos vinculado.</summary>
+public sealed class RemoverFilhoUseCase(
+    IFilhosRepository filhos,
+    ITenantUnitOfWork unitOfWork)
+{
+    public async Task ExecutarAsync(Guid id, CancellationToken ct = default)
+    {
+        var filho = await filhos.ObterPorIdAsync(id, ct)
+            ?? throw new RecursoNaoEncontradoException("Filho não encontrado.");
+
+        filho.Status = "inativo";
+        await unitOfWork.SaveChangesAsync(ct);
+    }
+}
+
 public sealed class AtualizarFilhoUseCase(
     IFilhosRepository filhos,
     ITenantUnitOfWork unitOfWork)

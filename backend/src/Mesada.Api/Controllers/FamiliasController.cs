@@ -1,4 +1,5 @@
 using Mesada.Api.Contracts;
+using Mesada.Application.Auth;
 using Mesada.Application.Exceptions;
 using Mesada.Application.Familias;
 using Microsoft.AspNetCore.Authorization;
@@ -6,10 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Mesada.Api.Controllers;
 
-/// <summary>Signup — cadastro de uma nova família (cadastro exclusivo da Web).</summary>
+/// <summary>Signup (anônimo) e dados da própria família (Master autenticado).</summary>
 [ApiController]
 [Route("api/familias")]
-public sealed class FamiliasController(CriarFamiliaUseCase criarFamilia) : ControllerBase
+public sealed class FamiliasController(
+    CriarFamiliaUseCase criarFamilia,
+    ObterMinhaFamiliaUseCase obterMinhaFamilia,
+    AtualizarMinhaFamiliaUseCase atualizarMinhaFamilia) : ControllerBase
 {
     [HttpPost]
     [AllowAnonymous]
@@ -31,6 +35,32 @@ public sealed class FamiliasController(CriarFamiliaUseCase criarFamilia) : Contr
         catch (EmailJaCadastradoException ex)
         {
             return Conflict(new ProblemDetails { Title = ex.Message, Status = StatusCodes.Status409Conflict });
+        }
+    }
+
+    [HttpGet]
+    [Authorize(Roles = MesadaPapeis.Master)]
+    [ProducesResponseType<FamiliaResponse>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Obter(CancellationToken ct)
+    {
+        var familia = await obterMinhaFamilia.ExecutarAsync(ct);
+        return Ok(new FamiliaResponse(familia.Id, familia.Nome, familia.CicloFechamentoPadrao));
+    }
+
+    [HttpPut]
+    [Authorize(Roles = MesadaPapeis.Master)]
+    [ProducesResponseType<FamiliaResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Atualizar([FromBody] AtualizarFamiliaRequest request, CancellationToken ct)
+    {
+        try
+        {
+            var familia = await atualizarMinhaFamilia.ExecutarAsync(request.Nome, request.CicloFechamentoPadrao, ct);
+            return Ok(new FamiliaResponse(familia.Id, familia.Nome, familia.CicloFechamentoPadrao));
+        }
+        catch (ValidacaoException ex)
+        {
+            return BadRequest(new ProblemDetails { Title = ex.Message, Status = StatusCodes.Status400BadRequest });
         }
     }
 }

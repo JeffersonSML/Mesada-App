@@ -9,7 +9,8 @@ namespace Mesada.Api.Controllers;
 [Route("api/auth")]
 public sealed class AuthController(
     AutenticarMasterUseCase autenticarMaster,
-    ResgatarConviteComumUseCase resgatarConvite) : ControllerBase
+    ResgatarConviteComumUseCase resgatarConvite,
+    ResgatarConviteMasterUseCase resgatarConviteMaster) : ControllerBase
 {
     /// <summary>Login do Master (pai/mãe/responsável) por e-mail e senha — cadastro exclusivo da Web.</summary>
     [HttpPost("master/login")]
@@ -46,6 +47,32 @@ public sealed class AuthController(
         catch (ConviteInvalidoException ex)
         {
             return BadRequest(new ProblemDetails { Title = ex.Message, Status = StatusCodes.Status400BadRequest });
+        }
+    }
+
+    /// <summary>Resgate de convite por um segundo responsável (Master) — cria a própria conta com e-mail/senha, diferente do resgate Comum (que só vincula um dispositivo).</summary>
+    [HttpPost("convites/{codigo}/resgatar-master")]
+    [ProducesResponseType<TokenResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> ResgatarConviteMaster(string codigo, [FromBody] ResgatarConviteMasterRequest request, CancellationToken ct)
+    {
+        try
+        {
+            var resultado = await resgatarConviteMaster.ExecutarAsync(codigo, request.Email, request.Senha, ct);
+            return Ok(new TokenResponse(resultado.Token));
+        }
+        catch (ValidacaoException ex)
+        {
+            return BadRequest(new ProblemDetails { Title = ex.Message, Status = StatusCodes.Status400BadRequest });
+        }
+        catch (ConviteInvalidoException ex)
+        {
+            return BadRequest(new ProblemDetails { Title = ex.Message, Status = StatusCodes.Status400BadRequest });
+        }
+        catch (EmailJaCadastradoException ex)
+        {
+            return Conflict(new ProblemDetails { Title = ex.Message, Status = StatusCodes.Status409Conflict });
         }
     }
 }

@@ -20,7 +20,8 @@ namespace Mesada.Api.Controllers;
 public sealed class FilhosController(
     ListarFilhosUseCase listarFilhos,
     CriarFilhoUseCase criarFilho,
-    AtualizarFilhoUseCase atualizarFilho) : ControllerBase
+    AtualizarFilhoUseCase atualizarFilho,
+    RemoverFilhoUseCase removerFilho) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType<IReadOnlyList<FilhoResponse>>(StatusCodes.Status200OK)]
@@ -64,6 +65,22 @@ public sealed class FilhosController(
         catch (ValidacaoException ex)
         {
             return BadRequest(new ProblemDetails { Title = ex.Message, Status = StatusCodes.Status400BadRequest });
+        }
+        catch (RecursoNaoEncontradoException ex)
+        {
+            return NotFound(new ProblemDetails { Title = ex.Message, Status = StatusCodes.Status404NotFound });
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Remover(Guid id, CancellationToken ct)
+    {
+        try
+        {
+            await removerFilho.ExecutarAsync(id, ct);
+            return NoContent();
         }
         catch (RecursoNaoEncontradoException ex)
         {

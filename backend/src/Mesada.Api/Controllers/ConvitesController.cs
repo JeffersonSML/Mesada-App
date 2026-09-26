@@ -27,13 +27,18 @@ public sealed class ConvitesController(
 
     [HttpPost]
     [ProducesResponseType<ConviteResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Criar([FromBody] CriarConviteRequest request, CancellationToken ct)
     {
         try
         {
-            var convite = await criar.ExecutarAsync(request.UsuarioComumId, ct);
+            var convite = await criar.ExecutarAsync(request.PapelAlvo, request.UsuarioComumId, request.NomeConvidado, ct);
             return CreatedAtAction(nameof(Listar), null, ParaResposta(convite));
+        }
+        catch (ValidacaoException ex)
+        {
+            return BadRequest(new ProblemDetails { Title = ex.Message, Status = StatusCodes.Status400BadRequest });
         }
         catch (RecursoNaoEncontradoException ex)
         {

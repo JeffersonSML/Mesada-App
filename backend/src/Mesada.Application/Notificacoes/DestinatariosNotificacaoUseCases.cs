@@ -66,6 +66,21 @@ public sealed class AdicionarDestinatarioNotificacaoUseCase(
     }
 }
 
+public sealed class AtualizarDestinatarioNotificacaoUseCase(
+    IDestinatariosNotificacaoRepository destinatarios,
+    ITenantUnitOfWork unitOfWork)
+{
+    public async Task<NotificacaoDestinatario> ExecutarAsync(Guid id, bool ativo, CancellationToken ct = default)
+    {
+        var destinatario = await destinatarios.ObterPorIdAsync(id, ct)
+            ?? throw new RecursoNaoEncontradoException("Destinatário de notificação não encontrado.");
+
+        destinatario.Ativo = ativo;
+        await unitOfWork.SaveChangesAsync(ct);
+        return destinatario;
+    }
+}
+
 public sealed class RemoverDestinatarioNotificacaoUseCase(
     IDestinatariosNotificacaoRepository destinatarios,
     ITenantUnitOfWork unitOfWork)

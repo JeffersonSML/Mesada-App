@@ -12,7 +12,15 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ITenantContextAccessor, HttpTenantContextAccessor>();
+// Singleton, não Scoped: HttpTenantContextAccessor não guarda estado próprio
+// (só lê IHttpContextAccessor.HttpContext, que já é ambient/AsyncLocal, a
+// cada acesso de propriedade) — precisa ser Singleton para que
+// TenantConnectionInterceptor também possa ser Singleton (ver
+// Mesada.Infrastructure.DependencyInjection), evitando o
+// ManyServiceProvidersCreatedWarning do EF Core (um DbContextOptions
+// "diferente" a cada requisição, por causa de um interceptor Scoped, força
+// reconstruir o service provider interno do EF Core em cada chamada).
+builder.Services.AddSingleton<ITenantContextAccessor, HttpTenantContextAccessor>();
 builder.Services.AddMesadaInfrastructure(builder.Configuration);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();

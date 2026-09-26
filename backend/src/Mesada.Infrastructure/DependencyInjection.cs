@@ -19,6 +19,7 @@ using Mesada.Infrastructure.Security;
 using Mesada.Infrastructure.Storage;
 using Mesada.Infrastructure.Tenancy;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -61,16 +62,39 @@ public static class DependencyInjection
             return new NpgsqlDataSourceBuilder(connectionString).MapMesadaEnums().Build();
         });
 
-        services.AddScoped<TenantConnectionInterceptor>();
+        // Singleton (não Scoped): interceptor injetado via
+        // AddInterceptors(sp.GetRequiredService<TenantConnectionInterceptor>())
+        // entra na chave de cache do model/service-provider interno do EF
+        // Core — uma instância nova por requisição fazia o EF Core enxergar
+        // DbContextOptions "diferentes" a cada vez e reconstruir seu
+        // container interno seguidamente, disparando
+        // ManyServiceProvidersCreatedWarning por requisição (um interceptor
+        // novo a cada resolução fazia o EF Core enxergar DbContextOptions
+        // "diferentes" e reconstruir seu container interno seguidamente). Só
+        // é seguro ser Singleton porque ITenantContextAccessor (ver
+        // Program.cs) também é Singleton e não guarda estado por requisição.
+        services.AddSingleton<TenantConnectionInterceptor>();
 
+        // Mesmo com o interceptor fixo acima, o aviso ainda dispara na suíte
+        // de testes de integração: cada uma das ~11 classes de teste sobe
+        // seu próprio WebApplicationFactory (host + DI container isolados),
+        // e cada host cria seu próprio NpgsqlDataSource/interceptor
+        // Singleton — ou seja, muitos "internal service providers"
+        // genuinamente distintos no mesmo processo de teste, cruzando o
+        // limite de 20 do EF Core. Isso nunca acontece em produção (só existe
+        // UM host real), então suprimir aqui é seguro — é exatamente o
+        // cenário que a própria documentação do EF Core cita como
+        // justificativa válida para ignorar este warning.
         services.AddDbContext<AppDbContext>((sp, options) => options
             .UseNpgsql(sp.GetRequiredKeyedService<NpgsqlDataSource>(ChaveDataSourceApp))
             .UseSnakeCaseNamingConvention()
-            .AddInterceptors(sp.GetRequiredService<TenantConnectionInterceptor>()));
+            .AddInterceptors(sp.GetRequiredService<TenantConnectionInterceptor>())
+            .ConfigureWarnings(w => w.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning)));
 
         services.AddDbContext<AdminDbContext>((sp, options) => options
             .UseNpgsql(sp.GetRequiredKeyedService<NpgsqlDataSource>(ChaveDataSourceAdmin))
-            .UseSnakeCaseNamingConvention());
+            .UseSnakeCaseNamingConvention()
+            .ConfigureWarnings(w => w.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning)));
 
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SecaoConfiguracao));
 
@@ -95,6 +119,8 @@ public static class DependencyInjection
         services.AddScoped<IDestinatariosNotificacaoRepository, DestinatariosNotificacaoRepository>();
         services.AddScoped<IFilhosRepository, FilhosRepository>();
         services.AddScoped<IConvitesRepository, ConvitesRepository>();
+        services.AddScoped<IMinhaFamiliaRepository, MinhaFamiliaRepository>();
+        services.AddScoped<IMastersRepository, MastersRepository>();
         services.AddScoped<ICategoriasRepository, CategoriasRepository>();
         services.AddScoped<ITarefasRepository, TarefasRepository>();
         services.AddScoped<IAderenciasRepository, AderenciasRepository>();
@@ -103,7 +129,12 @@ public static class DependencyInjection
 
         services.AddScoped<AutenticarMasterUseCase>();
         services.AddScoped<ResgatarConviteComumUseCase>();
+        services.AddScoped<ResgatarConviteMasterUseCase>();
         services.AddScoped<CriarFamiliaUseCase>();
+        services.AddScoped<ObterMinhaFamiliaUseCase>();
+        services.AddScoped<AtualizarMinhaFamiliaUseCase>();
+        services.AddScoped<ListarMastersUseCase>();
+        services.AddScoped<DesativarMasterUseCase>();
         services.AddScoped<AutenticarAdministradorUseCase>();
         services.AddScoped<TrocarSenhaAdministradorUseCase>();
         services.AddScoped<AtualizarEmailProprioAdministradorUseCase>();
@@ -118,6 +149,7 @@ public static class DependencyInjection
         services.AddScoped<ListarFilhosUseCase>();
         services.AddScoped<CriarFilhoUseCase>();
         services.AddScoped<AtualizarFilhoUseCase>();
+        services.AddScoped<RemoverFilhoUseCase>();
         services.AddScoped<ListarConvitesUseCase>();
         services.AddScoped<CriarConviteUseCase>();
         services.AddScoped<RevogarConviteUseCase>();
@@ -142,6 +174,7 @@ public static class DependencyInjection
         services.AddScoped<ObterCicloAtualUseCase>();
         services.AddScoped<ListarDestinatariosNotificacaoUseCase>();
         services.AddScoped<AdicionarDestinatarioNotificacaoUseCase>();
+        services.AddScoped<AtualizarDestinatarioNotificacaoUseCase>();
         services.AddScoped<RemoverDestinatarioNotificacaoUseCase>();
 
         services.AddInfraServicesExternas(configuration);

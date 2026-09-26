@@ -20,6 +20,7 @@ namespace Mesada.Api.Controllers;
 public sealed class NotificacoesController(
     ListarDestinatariosNotificacaoUseCase listar,
     AdicionarDestinatarioNotificacaoUseCase adicionar,
+    AtualizarDestinatarioNotificacaoUseCase atualizar,
     RemoverDestinatarioNotificacaoUseCase remover) : ControllerBase
 {
     [HttpGet]
@@ -45,6 +46,22 @@ public sealed class NotificacoesController(
         catch (ValidacaoException ex)
         {
             return BadRequest(new ProblemDetails { Title = ex.Message, Status = StatusCodes.Status400BadRequest });
+        }
+    }
+
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType<DestinatarioNotificacaoResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarDestinatarioNotificacaoRequest request, CancellationToken ct)
+    {
+        try
+        {
+            var destinatario = await atualizar.ExecutarAsync(id, request.Ativo, ct);
+            return Ok(new DestinatarioNotificacaoResponse(destinatario.Id, destinatario.Tipo, destinatario.Valor, destinatario.Ativo));
+        }
+        catch (RecursoNaoEncontradoException ex)
+        {
+            return NotFound(new ProblemDetails { Title = ex.Message, Status = StatusCodes.Status404NotFound });
         }
     }
 

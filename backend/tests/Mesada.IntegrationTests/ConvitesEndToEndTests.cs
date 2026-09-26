@@ -81,7 +81,7 @@ public sealed class ConvitesEndToEndTests : IClassFixture<MesadaWebApplicationFa
         var token = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var criarResponse = await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(_filhoAId));
+        var criarResponse = await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(PapelConvite.Comum, _filhoAId, null));
         Assert.Equal(HttpStatusCode.Created, criarResponse.StatusCode);
         var convite = await criarResponse.Content.ReadFromJsonAsync<ConviteResponse>();
         Assert.Equal(StatusConvite.Pendente, convite!.Status);
@@ -100,7 +100,7 @@ public sealed class ConvitesEndToEndTests : IClassFixture<MesadaWebApplicationFa
         var token = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(_filhoBId));
+        var response = await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(PapelConvite.Comum, _filhoBId, null));
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
@@ -110,7 +110,7 @@ public sealed class ConvitesEndToEndTests : IClassFixture<MesadaWebApplicationFa
         var token = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(_filhoAId));
+        await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(PapelConvite.Comum, _filhoAId, null));
 
         var listaResponse = await _client.GetAsync("/api/convites");
         var lista = await listaResponse.Content.ReadFromJsonAsync<List<ConviteResponse>>();
@@ -126,7 +126,7 @@ public sealed class ConvitesEndToEndTests : IClassFixture<MesadaWebApplicationFa
         var token = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var criarResponse = await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(_filhoAId));
+        var criarResponse = await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(PapelConvite.Comum, _filhoAId, null));
         var convite = await criarResponse.Content.ReadFromJsonAsync<ConviteResponse>();
 
         var revogarResponse = await _client.DeleteAsync($"/api/convites/{convite!.Id}");
