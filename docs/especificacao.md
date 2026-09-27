@@ -238,17 +238,40 @@ necessidade de deploy para alterar valores.
 - Gestão de categorias/tarefas padrão do sistema (as que vêm pré-cadastradas
   para todas as famílias)
 
+### Grupos de administrador (controle de acesso interno)
+
+O acesso ao painel administrativo é sempre por convite de outro
+Administrador e sempre vinculado a um **grupo de administrador**, que define
+o que aquele administrador pode fazer:
+
+- **Owner** — grupo fixo (`sistema = true`), criado no bootstrap do
+  sistema, com acesso irrestrito a tudo do Módulo Administrador. Não pode
+  ser editado, renomeado nem excluído, e o sistema nunca fica sem nenhum
+  Owner ativo (bloqueado ao tentar desativar o último).
+- **Grupos customizados** (ex.: "Tecnologia") — criados, editados e
+  excluídos livremente por qualquer Owner, com um conjunto de permissões
+  (`permissoes`, um mapa chave→booleano) livre para representar as áreas do
+  painel que aquele grupo pode acessar. Só um Owner convida administradores,
+  cria/edita/exclui grupos ou reatribui o grupo de um administrador
+  existente.
+
+Esse plano de autenticação/autorização é totalmente separado do login do
+Master/Comum (entidade própria `Administrador`, sem `familia_id`, claims de
+JWT próprias) — ver [ADR 0007](adr/0007-modulo-administrador-mesma-app.md)
+para os detalhes de implementação e segregação.
+
 ### Telas do Administrador
 
-| Tela | Conteúdo |
-|---|---|
-| Dashboard Geral | Métricas de adoção (famílias ativas, MRR, churn), gráfico de crescimento |
-| Famílias | Lista de famílias, status da assinatura, ações de suspender/reativar |
-| Detalhe da Família | Dados da família, Masters vinculados, filhos, plano, histórico de billing |
-| Controle de Acessos | Gestão de administradores do sistema, permissões por administrador, log de auditoria |
-| Assinaturas | Lista de assinaturas, status de cobrança, planos, cancelamentos |
-| Suporte | Fila de tickets/ocorrências reportados pelos Masters |
-| Categorias Padrão | Gestão das categorias/tarefas padrão disponíveis a todas as famílias |
+| Tela | Conteúdo | Status |
+|---|---|---|
+| Dashboard Geral | Métricas de adoção (famílias ativas, MRR, churn), gráfico de crescimento | Pendente |
+| Famílias | Lista de famílias, status da assinatura, ações de suspender/reativar | Pendente |
+| Detalhe da Família | Dados da família, Masters vinculados, filhos, plano, histórico de billing | Pendente |
+| Administradores | Lista de administradores, convite (com senha temporária), edição de grupo, desativação | Implementada |
+| Grupos de Acesso | CRUD de grupos de administrador e suas permissões (grupo Owner protegido) | Implementada |
+| Assinaturas | Lista de assinaturas, status de cobrança, planos, cancelamentos | Pendente |
+| Suporte | Fila de tickets/ocorrências reportados pelos Masters | Pendente |
+| Categorias Padrão | Gestão das categorias/tarefas padrão disponíveis a todas as famílias | Pendente |
 
 ## Fluxo de Convite
 

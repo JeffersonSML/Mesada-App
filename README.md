@@ -64,5 +64,5 @@ ritmo de evolução enquanto o produto é construído por um único time.
 - Integração com gateways de pagamento é sempre feita atrás da interface
   `IPaymentProvider`, nunca diretamente contra o SDK do provedor.
 - **Todo frontend (Web, e qualquer outra interface) é construído via Lovable**
-  — o código Angular do diretório `/web` é gerado/gerenciado pelo Lovable, não
+  — o código React do diretório `/web` é gerado/gerenciado pelo Lovable, não
   escrito manualmente fora dele.
