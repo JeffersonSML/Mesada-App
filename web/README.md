@@ -7,6 +7,16 @@ escrito manualmente neste diretório.
 **Projeto Lovable:** https://lovable.dev/projects/0ffe502c-7386-4b57-9954-c12b45b20cb9
 **Preview:** https://id-preview--0ffe502c-7386-4b57-9954-c12b45b20cb9.lovable.app
 
+> ⚠️ **O preview hospedado acima ainda não funciona sozinho.** Ele roda no
+> seu navegador e tenta chamar a API em `http://localhost:5080` (o padrão de
+> `VITE_API_BASE_URL`) — ou seja, a porta 5080 da **sua própria máquina**,
+> onde nada está rodando. O backend .NET ainda não foi publicado num
+> endereço público (isso é a Etapa 6, deploy, ainda não feita por decisão
+> do responsável do produto). Até lá, "Não foi possível conectar à API" no
+> preview hospedado é esperado — não é senha errada nem bug do frontend.
+> Para testar de verdade, rode o backend e a Web localmente na mesma
+> máquina (ver "Como testar localmente" abaixo).
+
 ## Nota sobre a stack
 
 A especificação original previa Angular para a Web. Lovable não gera
@@ -115,6 +125,31 @@ tarefa/filho ainda mostra um identificador técnico em vez do nome — a API
 já foi corrigida para enviar `nomeTarefa`/`nomeFilho`, falta só a mensagem
 de ajuste ser enviada ao Lovable para consumir os campos novos (bloqueado
 no momento por falta de créditos no workspace Lovable).
+
+## Como testar localmente
+
+Com o preview hospedado ainda sem backend público (ver aviso no topo), o
+jeito de testar de ponta a ponta hoje é rodar os dois lados na mesma
+máquina:
+
+1. **Backend** — siga ["Rodando localmente"](../backend/README.md#rodando-localmente)
+   no README do backend (provisionar Postgres, exportar as variáveis de
+   ambiente, `dotnet run --project src/Mesada.Api`). Por padrão sobe em
+   `http://localhost:5080`.
+2. **Web** — baixe o código deste projeto Lovable (editor → menu do
+   projeto → "Export"/Dev Mode, ou `git clone` se o Lovable já estiver
+   sincronizado com um repositório Git):
+   ```bash
+   npm install
+   echo "VITE_API_BASE_URL=http://localhost:5080" > .env
+   npm run dev
+   ```
+   Abre em `http://localhost:5173` (ou a porta que o Vite escolher), já
+   falando com o backend local.
+
+Publicar o backend num endereço público (para o preview hospedado do
+Lovable funcionar sozinho) é uma decisão de infraestrutura em aberto —
+avise quando quiser seguir com isso.
 
 ## Notas
 
