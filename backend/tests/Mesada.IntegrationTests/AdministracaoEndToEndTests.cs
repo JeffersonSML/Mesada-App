@@ -95,9 +95,9 @@ public sealed class AdministracaoEndToEndTests : IClassFixture<MesadaWebApplicat
     [Fact]
     public async Task Login_ComCredenciaisValidas_Retorna200()
     {
-        var response = await _client.PostAsJsonAsync("/api/admin/auth/login", new LoginAdministradorRequest(_emailOwnerTeste, SenhaOwner));
+        var response = await _client.PostAsJsonAsync("/api/admin/auth/login", new LoginAdministradorRequest(_emailOwnerTeste, SenhaOwner), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var body = await response.Content.ReadFromJsonAsync<TokenAdministradorResponse>();
+        var body = await response.Content.ReadFromJsonAsync<TokenAdministradorResponse>(MesadaJsonOptions.Default);
         Assert.False(string.IsNullOrWhiteSpace(body!.Token));
         Assert.False(body.DeveTrocarSenha);
     }
@@ -105,7 +105,7 @@ public sealed class AdministracaoEndToEndTests : IClassFixture<MesadaWebApplicat
     [Fact]
     public async Task Login_ComSenhaErrada_Retorna401()
     {
-        var response = await _client.PostAsJsonAsync("/api/admin/auth/login", new LoginAdministradorRequest(_emailOwnerTeste, "senha-errada"));
+        var response = await _client.PostAsJsonAsync("/api/admin/auth/login", new LoginAdministradorRequest(_emailOwnerTeste, "senha-errada"), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
@@ -116,15 +116,15 @@ public sealed class AdministracaoEndToEndTests : IClassFixture<MesadaWebApplicat
 
         var email = $"convidado-{Guid.NewGuid():N}@teste.local";
         var convidarResponse = await _client.PostAsJsonAsync("/api/admin/administradores",
-            new ConvidarAdministradorRequest("Pessoa de Tecnologia", email, _grupoTecnologiaId));
+            new ConvidarAdministradorRequest("Pessoa de Tecnologia", email, _grupoTecnologiaId), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, convidarResponse.StatusCode);
-        var convite = await convidarResponse.Content.ReadFromJsonAsync<ConviteAdministradorResponse>();
+        var convite = await convidarResponse.Content.ReadFromJsonAsync<ConviteAdministradorResponse>(MesadaJsonOptions.Default);
         Assert.True(convite!.Administrador.DeveTrocarSenha);
 
         _client.DefaultRequestHeaders.Authorization = null;
-        var loginResponse = await _client.PostAsJsonAsync("/api/admin/auth/login", new LoginAdministradorRequest(email, convite.SenhaTemporaria));
+        var loginResponse = await _client.PostAsJsonAsync("/api/admin/auth/login", new LoginAdministradorRequest(email, convite.SenhaTemporaria), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
-        var loginBody = await loginResponse.Content.ReadFromJsonAsync<TokenAdministradorResponse>();
+        var loginBody = await loginResponse.Content.ReadFromJsonAsync<TokenAdministradorResponse>(MesadaJsonOptions.Default);
         Assert.True(loginBody!.DeveTrocarSenha);
     }
 
@@ -134,15 +134,15 @@ public sealed class AdministracaoEndToEndTests : IClassFixture<MesadaWebApplicat
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenOwnerTeste);
         var email = $"tecnico-{Guid.NewGuid():N}@teste.local";
         var convidarResponse = await _client.PostAsJsonAsync("/api/admin/administradores",
-            new ConvidarAdministradorRequest("Técnico", email, _grupoTecnologiaId));
-        var convite = await convidarResponse.Content.ReadFromJsonAsync<ConviteAdministradorResponse>();
+            new ConvidarAdministradorRequest("Técnico", email, _grupoTecnologiaId), MesadaJsonOptions.Default);
+        var convite = await convidarResponse.Content.ReadFromJsonAsync<ConviteAdministradorResponse>(MesadaJsonOptions.Default);
 
-        var loginResponse = await _client.PostAsJsonAsync("/api/admin/auth/login", new LoginAdministradorRequest(email, convite!.SenhaTemporaria));
-        var loginBody = await loginResponse.Content.ReadFromJsonAsync<TokenAdministradorResponse>();
+        var loginResponse = await _client.PostAsJsonAsync("/api/admin/auth/login", new LoginAdministradorRequest(email, convite!.SenhaTemporaria), MesadaJsonOptions.Default);
+        var loginBody = await loginResponse.Content.ReadFromJsonAsync<TokenAdministradorResponse>(MesadaJsonOptions.Default);
 
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginBody!.Token);
         var response = await _client.PostAsJsonAsync("/api/admin/administradores",
-            new ConvidarAdministradorRequest("Outro", $"outro-{Guid.NewGuid():N}@teste.local", _grupoTecnologiaId));
+            new ConvidarAdministradorRequest("Outro", $"outro-{Guid.NewGuid():N}@teste.local", _grupoTecnologiaId), MesadaJsonOptions.Default);
 
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
@@ -165,7 +165,7 @@ public sealed class AdministracaoEndToEndTests : IClassFixture<MesadaWebApplicat
         var grupoOwnerId = await admin.GruposAdministrador.Where(g => g.Nome == "Owner").Select(g => g.Id).SingleAsync();
 
         var atualizarResponse = await _client.PutAsJsonAsync($"/api/admin/grupos/{grupoOwnerId}",
-            new SalvarGrupoAdministradorRequest("Owner Renomeado", null, null));
+            new SalvarGrupoAdministradorRequest("Owner Renomeado", null, null), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, atualizarResponse.StatusCode);
 
         var removerResponse = await _client.DeleteAsync($"/api/admin/grupos/{grupoOwnerId}");
@@ -178,7 +178,7 @@ public sealed class AdministracaoEndToEndTests : IClassFixture<MesadaWebApplicat
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenOwnerTeste);
 
         await _client.PostAsJsonAsync("/api/admin/administradores",
-            new ConvidarAdministradorRequest("Vinculado", $"vinculado-{Guid.NewGuid():N}@teste.local", _grupoTecnologiaId));
+            new ConvidarAdministradorRequest("Vinculado", $"vinculado-{Guid.NewGuid():N}@teste.local", _grupoTecnologiaId), MesadaJsonOptions.Default);
 
         var response = await _client.DeleteAsync($"/api/admin/grupos/{_grupoTecnologiaId}");
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -189,7 +189,7 @@ public sealed class AdministracaoEndToEndTests : IClassFixture<MesadaWebApplicat
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenOwnerTeste);
         var response = await _client.PostAsJsonAsync("/api/admin/auth/trocar-senha",
-            new TrocarSenhaAdministradorRequest("senha-errada", "NovaSenhaForte123"));
+            new TrocarSenhaAdministradorRequest("senha-errada", "NovaSenhaForte123"), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
@@ -197,7 +197,7 @@ public sealed class AdministracaoEndToEndTests : IClassFixture<MesadaWebApplicat
     public async Task AtualizarEmail_ParaOMesmoEmailAtual_NaoConflitaConsigoMesmo()
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenOwnerTeste);
-        var response = await _client.PutAsJsonAsync("/api/admin/auth/email", new AtualizarEmailAdministradorRequest(_emailOwnerTeste));
+        var response = await _client.PutAsJsonAsync("/api/admin/auth/email", new AtualizarEmailAdministradorRequest(_emailOwnerTeste), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
 
@@ -207,14 +207,14 @@ public sealed class AdministracaoEndToEndTests : IClassFixture<MesadaWebApplicat
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenOwnerTeste);
         var emailConvidado = $"convidado-email-{Guid.NewGuid():N}@teste.local";
         var convidarResponse = await _client.PostAsJsonAsync("/api/admin/administradores",
-            new ConvidarAdministradorRequest("Convidado", emailConvidado, _grupoTecnologiaId));
-        var convite = await convidarResponse.Content.ReadFromJsonAsync<ConviteAdministradorResponse>();
+            new ConvidarAdministradorRequest("Convidado", emailConvidado, _grupoTecnologiaId), MesadaJsonOptions.Default);
+        var convite = await convidarResponse.Content.ReadFromJsonAsync<ConviteAdministradorResponse>(MesadaJsonOptions.Default);
 
-        var loginResponse = await _client.PostAsJsonAsync("/api/admin/auth/login", new LoginAdministradorRequest(emailConvidado, convite!.SenhaTemporaria));
-        var loginBody = await loginResponse.Content.ReadFromJsonAsync<TokenAdministradorResponse>();
+        var loginResponse = await _client.PostAsJsonAsync("/api/admin/auth/login", new LoginAdministradorRequest(emailConvidado, convite!.SenhaTemporaria), MesadaJsonOptions.Default);
+        var loginBody = await loginResponse.Content.ReadFromJsonAsync<TokenAdministradorResponse>(MesadaJsonOptions.Default);
 
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginBody!.Token);
-        var response = await _client.PutAsJsonAsync("/api/admin/auth/email", new AtualizarEmailAdministradorRequest(_emailOwnerTeste));
+        var response = await _client.PutAsJsonAsync("/api/admin/auth/email", new AtualizarEmailAdministradorRequest(_emailOwnerTeste), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
     }
 }

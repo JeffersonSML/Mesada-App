@@ -86,15 +86,15 @@ public sealed class TarefasEndToEndTests : IClassFixture<MesadaWebApplicationFac
         var token = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var criarResponse = await _client.PostAsJsonAsync("/api/tarefas", TarefaValorDiretoValida(_categoriaId));
+        var criarResponse = await _client.PostAsJsonAsync("/api/tarefas", TarefaValorDiretoValida(_categoriaId), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, criarResponse.StatusCode);
-        var criada = await criarResponse.Content.ReadFromJsonAsync<TarefaResponse>();
+        var criada = await criarResponse.Content.ReadFromJsonAsync<TarefaResponse>(MesadaJsonOptions.Default);
         Assert.Equal(10m, criada!.Valor);
 
         var atualizarRequest = TarefaValorDiretoValida(_categoriaId) with { Nome = "Arrumar a cama - renomeada", Valor = 15m };
-        var atualizarResponse = await _client.PutAsJsonAsync($"/api/tarefas/{criada.Id}", atualizarRequest);
+        var atualizarResponse = await _client.PutAsJsonAsync($"/api/tarefas/{criada.Id}", atualizarRequest, MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.OK, atualizarResponse.StatusCode);
-        var atualizada = await atualizarResponse.Content.ReadFromJsonAsync<TarefaResponse>();
+        var atualizada = await atualizarResponse.Content.ReadFromJsonAsync<TarefaResponse>(MesadaJsonOptions.Default);
         Assert.Equal("Arrumar a cama - renomeada", atualizada!.Nome);
         Assert.Equal(15m, atualizada.Valor);
 
@@ -102,7 +102,7 @@ public sealed class TarefasEndToEndTests : IClassFixture<MesadaWebApplicationFac
         Assert.Equal(HttpStatusCode.NoContent, removerResponse.StatusCode);
 
         var listaResponse = await _client.GetAsync("/api/tarefas");
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<TarefaResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<TarefaResponse>>(MesadaJsonOptions.Default);
         Assert.DoesNotContain(lista!, t => t.Id == criada.Id);
     }
 
@@ -113,7 +113,7 @@ public sealed class TarefasEndToEndTests : IClassFixture<MesadaWebApplicationFac
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var request = TarefaValorDiretoValida(_categoriaId) with { Valor = null };
-        var response = await _client.PostAsJsonAsync("/api/tarefas", request);
+        var response = await _client.PostAsJsonAsync("/api/tarefas", request, MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
@@ -124,7 +124,7 @@ public sealed class TarefasEndToEndTests : IClassFixture<MesadaWebApplicationFac
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var request = TarefaValorDiretoValida(_categoriaId) with { Tipo = TipoTarefa.Avulsa, ValidadeAvulsa = null };
-        var response = await _client.PostAsJsonAsync("/api/tarefas", request);
+        var response = await _client.PostAsJsonAsync("/api/tarefas", request, MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
@@ -135,7 +135,7 @@ public sealed class TarefasEndToEndTests : IClassFixture<MesadaWebApplicationFac
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var request = TarefaValorDiretoValida(_categoriaId) with { Natureza = NaturezaTarefa.Bonus, ValorMulta = 5m };
-        var response = await _client.PostAsJsonAsync("/api/tarefas", request);
+        var response = await _client.PostAsJsonAsync("/api/tarefas", request, MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
@@ -145,15 +145,15 @@ public sealed class TarefasEndToEndTests : IClassFixture<MesadaWebApplicationFac
         var token = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var tarefaResponse = await _client.PostAsJsonAsync("/api/tarefas", TarefaValorDiretoValida(_categoriaId));
-        var tarefa = await tarefaResponse.Content.ReadFromJsonAsync<TarefaResponse>();
+        var tarefaResponse = await _client.PostAsJsonAsync("/api/tarefas", TarefaValorDiretoValida(_categoriaId), MesadaJsonOptions.Default);
+        var tarefa = await tarefaResponse.Content.ReadFromJsonAsync<TarefaResponse>(MesadaJsonOptions.Default);
 
         var primeira = await _client.PostAsJsonAsync($"/api/tarefas/{tarefa!.Id}/aderencias",
-            new AderenciaRequest(_filhoValorDiretoId, null, null));
+            new AderenciaRequest(_filhoValorDiretoId, null, null), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, primeira.StatusCode);
 
         var segunda = await _client.PostAsJsonAsync($"/api/tarefas/{tarefa.Id}/aderencias",
-            new AderenciaRequest(_filhoValorDiretoId, null, null));
+            new AderenciaRequest(_filhoValorDiretoId, null, null), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, segunda.StatusCode);
 
         var removerResponse = await _client.DeleteAsync($"/api/tarefas/{tarefa.Id}/aderencias/{_filhoValorDiretoId}");
@@ -161,7 +161,7 @@ public sealed class TarefasEndToEndTests : IClassFixture<MesadaWebApplicationFac
 
         // Readerir após remoção reativa a linha em vez de duplicar (UNIQUE tarefa_id/usuario_comum_id).
         var terceira = await _client.PostAsJsonAsync($"/api/tarefas/{tarefa.Id}/aderencias",
-            new AderenciaRequest(_filhoValorDiretoId, 99m, null));
+            new AderenciaRequest(_filhoValorDiretoId, 99m, null), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, terceira.StatusCode);
     }
 
@@ -174,16 +174,16 @@ public sealed class TarefasEndToEndTests : IClassFixture<MesadaWebApplicationFac
         // Sem nenhuma aderência ainda: mesada_base (100) / (0 + 1) = 100.
         var response = await _client.GetAsync($"/api/tarefas/sugestao?usuarioComumId={_filhoValorDiretoId}&modoCalculo=ValorDireto");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var sugestao = await response.Content.ReadFromJsonAsync<SugestaoValorResponse>();
+        var sugestao = await response.Content.ReadFromJsonAsync<SugestaoValorResponse>(MesadaJsonOptions.Default);
         Assert.Equal(100m, sugestao!.Valor);
 
-        var tarefaResponse = await _client.PostAsJsonAsync("/api/tarefas", TarefaValorDiretoValida(_categoriaId));
-        var tarefa = await tarefaResponse.Content.ReadFromJsonAsync<TarefaResponse>();
-        await _client.PostAsJsonAsync($"/api/tarefas/{tarefa!.Id}/aderencias", new AderenciaRequest(_filhoValorDiretoId, null, null));
+        var tarefaResponse = await _client.PostAsJsonAsync("/api/tarefas", TarefaValorDiretoValida(_categoriaId), MesadaJsonOptions.Default);
+        var tarefa = await tarefaResponse.Content.ReadFromJsonAsync<TarefaResponse>(MesadaJsonOptions.Default);
+        await _client.PostAsJsonAsync($"/api/tarefas/{tarefa!.Id}/aderencias", new AderenciaRequest(_filhoValorDiretoId, null, null), MesadaJsonOptions.Default);
 
         // Com 1 aderência: mesada_base (100) / (1 + 1) = 50.
         var segundaResponse = await _client.GetAsync($"/api/tarefas/sugestao?usuarioComumId={_filhoValorDiretoId}&modoCalculo=ValorDireto");
-        var segundaSugestao = await segundaResponse.Content.ReadFromJsonAsync<SugestaoValorResponse>();
+        var segundaSugestao = await segundaResponse.Content.ReadFromJsonAsync<SugestaoValorResponse>(MesadaJsonOptions.Default);
         Assert.Equal(50m, segundaSugestao!.Valor);
     }
 
@@ -196,7 +196,7 @@ public sealed class TarefasEndToEndTests : IClassFixture<MesadaWebApplicationFac
         // Pontos_totais = 100 / 2 = 50; Pontos_sugeridos = 50 / 1 = 50.
         var response = await _client.GetAsync($"/api/tarefas/sugestao?usuarioComumId={_filhoPontosId}&modoCalculo=Pontos");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var sugestao = await response.Content.ReadFromJsonAsync<SugestaoValorResponse>();
+        var sugestao = await response.Content.ReadFromJsonAsync<SugestaoValorResponse>(MesadaJsonOptions.Default);
         Assert.Equal(50m, sugestao!.Valor);
     }
 
@@ -212,9 +212,9 @@ public sealed class TarefasEndToEndTests : IClassFixture<MesadaWebApplicationFac
 
     private async Task<string> LoginMasterAAsync()
     {
-        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA });
+        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA }, MesadaJsonOptions.Default);
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        var body = await response.Content.ReadFromJsonAsync<TokenResponse>(MesadaJsonOptions.Default);
         return body!.Token;
     }
 }

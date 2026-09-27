@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Mesada.Api.Tenancy;
 using Mesada.Application.Abstractions;
 using Mesada.Application.Auth;
@@ -48,7 +49,14 @@ builder.Services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationSc
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
+// JsonStringEnumConverter: por padrão, System.Text.Json serializa enums como
+// número (ex.: CicloPeriodicidade.Mensal vira 2), o que só passou
+// despercebido nos testes de integração porque eles montam os requests com
+// os tipos C# dos enums diretamente — qualquer cliente HTTP real (curl, o
+// frontend Lovable) que envie a string "Mensal" documentada no contrato
+// recebe 400. Descoberto testando de verdade contra a API via HTTP puro.
+builder.Services.AddControllers().AddJsonOptions(options =>
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {

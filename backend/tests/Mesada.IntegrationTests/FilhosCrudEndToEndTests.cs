@@ -74,16 +74,16 @@ public sealed class FilhosCrudEndToEndTests : IClassFixture<MesadaWebApplication
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var criarResponse = await _client.PostAsJsonAsync("/api/filhos",
-            new CriarFilhoRequest("Filho A", "Fofo", CicloPeriodicidade.Mensal, 100m, 0.5m));
+            new CriarFilhoRequest("Filho A", "Fofo", CicloPeriodicidade.Mensal, 100m, 0.5m), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, criarResponse.StatusCode);
-        var criado = await criarResponse.Content.ReadFromJsonAsync<FilhoDetalheResponse>();
+        var criado = await criarResponse.Content.ReadFromJsonAsync<FilhoDetalheResponse>(MesadaJsonOptions.Default);
         Assert.Equal(100m, criado!.MesadaBase);
         Assert.Equal(0.5m, criado.ValorPonto);
 
         var atualizarResponse = await _client.PutAsJsonAsync($"/api/filhos/{criado.Id}",
-            new AtualizarFilhoRequest("Filho A Renomeado", "Fofinho", CicloPeriodicidade.Quinzenal, 150m, null));
+            new AtualizarFilhoRequest("Filho A Renomeado", "Fofinho", CicloPeriodicidade.Quinzenal, 150m, null), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.OK, atualizarResponse.StatusCode);
-        var atualizado = await atualizarResponse.Content.ReadFromJsonAsync<FilhoDetalheResponse>();
+        var atualizado = await atualizarResponse.Content.ReadFromJsonAsync<FilhoDetalheResponse>(MesadaJsonOptions.Default);
         Assert.Equal("Filho A Renomeado", atualizado!.Nome);
         Assert.Equal(150m, atualizado.MesadaBase);
         Assert.Null(atualizado.ValorPonto);
@@ -97,7 +97,7 @@ public sealed class FilhosCrudEndToEndTests : IClassFixture<MesadaWebApplication
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var response = await _client.PostAsJsonAsync("/api/filhos",
-            new CriarFilhoRequest("Filho Invalido", null, CicloPeriodicidade.Mensal, -10m, null));
+            new CriarFilhoRequest("Filho Invalido", null, CicloPeriodicidade.Mensal, -10m, null), MesadaJsonOptions.Default);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -109,16 +109,16 @@ public sealed class FilhosCrudEndToEndTests : IClassFixture<MesadaWebApplication
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var response = await _client.PutAsJsonAsync($"/api/filhos/{_filhoBId}",
-            new AtualizarFilhoRequest("Tentativa", null, CicloPeriodicidade.Mensal, 50m, null));
+            new AtualizarFilhoRequest("Tentativa", null, CicloPeriodicidade.Mensal, 50m, null), MesadaJsonOptions.Default);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     private async Task<string> LoginMasterAAsync()
     {
-        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA });
+        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA }, MesadaJsonOptions.Default);
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        var body = await response.Content.ReadFromJsonAsync<TokenResponse>(MesadaJsonOptions.Default);
         return body!.Token;
     }
 }

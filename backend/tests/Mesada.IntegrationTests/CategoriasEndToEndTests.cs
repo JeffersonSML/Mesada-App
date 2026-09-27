@@ -65,7 +65,7 @@ public sealed class CategoriasEndToEndTests : IClassFixture<MesadaWebApplication
 
         var response = await _client.GetAsync("/api/categorias");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var categorias = await response.Content.ReadFromJsonAsync<List<CategoriaResponse>>();
+        var categorias = await response.Content.ReadFromJsonAsync<List<CategoriaResponse>>(MesadaJsonOptions.Default);
 
         Assert.NotNull(categorias);
         Assert.NotEmpty(categorias!);
@@ -78,21 +78,21 @@ public sealed class CategoriasEndToEndTests : IClassFixture<MesadaWebApplication
         var token = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var criarResponse = await _client.PostAsJsonAsync("/api/categorias", new CriarCategoriaRequest("Estudos Extras", null));
+        var criarResponse = await _client.PostAsJsonAsync("/api/categorias", new CriarCategoriaRequest("Estudos Extras", null), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, criarResponse.StatusCode);
-        var criada = await criarResponse.Content.ReadFromJsonAsync<CategoriaResponse>();
+        var criada = await criarResponse.Content.ReadFromJsonAsync<CategoriaResponse>(MesadaJsonOptions.Default);
         Assert.False(criada!.Sistema);
 
-        var atualizarResponse = await _client.PutAsJsonAsync($"/api/categorias/{criada.Id}", new AtualizarCategoriaRequest("Estudos Extras Renomeado"));
+        var atualizarResponse = await _client.PutAsJsonAsync($"/api/categorias/{criada.Id}", new AtualizarCategoriaRequest("Estudos Extras Renomeado"), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.OK, atualizarResponse.StatusCode);
-        var atualizada = await atualizarResponse.Content.ReadFromJsonAsync<CategoriaResponse>();
+        var atualizada = await atualizarResponse.Content.ReadFromJsonAsync<CategoriaResponse>(MesadaJsonOptions.Default);
         Assert.Equal("Estudos Extras Renomeado", atualizada!.Nome);
 
         var removerResponse = await _client.DeleteAsync($"/api/categorias/{criada.Id}");
         Assert.Equal(HttpStatusCode.NoContent, removerResponse.StatusCode);
 
         var listaResponse = await _client.GetAsync("/api/categorias");
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<CategoriaResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<CategoriaResponse>>(MesadaJsonOptions.Default);
         Assert.DoesNotContain(lista!, c => c.Id == criada.Id);
     }
 
@@ -103,10 +103,10 @@ public sealed class CategoriasEndToEndTests : IClassFixture<MesadaWebApplication
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var listaResponse = await _client.GetAsync("/api/categorias");
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<CategoriaResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<CategoriaResponse>>(MesadaJsonOptions.Default);
         var categoriaSistema = lista!.First(c => c.Sistema);
 
-        var response = await _client.PutAsJsonAsync($"/api/categorias/{categoriaSistema.Id}", new AtualizarCategoriaRequest("Tentando Renomear"));
+        var response = await _client.PutAsJsonAsync($"/api/categorias/{categoriaSistema.Id}", new AtualizarCategoriaRequest("Tentando Renomear"), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
@@ -117,7 +117,7 @@ public sealed class CategoriasEndToEndTests : IClassFixture<MesadaWebApplication
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var listaResponse = await _client.GetAsync("/api/categorias");
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<CategoriaResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<CategoriaResponse>>(MesadaJsonOptions.Default);
         var categoriaSistema = lista!.First(c => c.Sistema);
 
         var response = await _client.DeleteAsync($"/api/categorias/{categoriaSistema.Id}");
@@ -126,9 +126,9 @@ public sealed class CategoriasEndToEndTests : IClassFixture<MesadaWebApplication
 
     private async Task<string> LoginMasterAAsync()
     {
-        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA });
+        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA }, MesadaJsonOptions.Default);
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        var body = await response.Content.ReadFromJsonAsync<TokenResponse>(MesadaJsonOptions.Default);
         return body!.Token;
     }
 }

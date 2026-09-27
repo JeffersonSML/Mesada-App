@@ -81,16 +81,16 @@ public sealed class ConvitesEndToEndTests : IClassFixture<MesadaWebApplicationFa
         var token = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var criarResponse = await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(PapelConvite.Comum, _filhoAId, null));
+        var criarResponse = await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(PapelConvite.Comum, _filhoAId, null), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, criarResponse.StatusCode);
-        var convite = await criarResponse.Content.ReadFromJsonAsync<ConviteResponse>();
+        var convite = await criarResponse.Content.ReadFromJsonAsync<ConviteResponse>(MesadaJsonOptions.Default);
         Assert.Equal(StatusConvite.Pendente, convite!.Status);
 
         _client.DefaultRequestHeaders.Authorization = null;
         var resgateResponse = await _client.PostAsJsonAsync(
-            $"/api/auth/convites/{convite.Codigo}/resgatar", new ResgatarConviteRequest("dispositivo-teste-123"));
+            $"/api/auth/convites/{convite.Codigo}/resgatar", new ResgatarConviteRequest("dispositivo-teste-123"), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.OK, resgateResponse.StatusCode);
-        var tokenFilho = await resgateResponse.Content.ReadFromJsonAsync<TokenResponse>();
+        var tokenFilho = await resgateResponse.Content.ReadFromJsonAsync<TokenResponse>(MesadaJsonOptions.Default);
         Assert.False(string.IsNullOrWhiteSpace(tokenFilho!.Token));
     }
 
@@ -100,7 +100,7 @@ public sealed class ConvitesEndToEndTests : IClassFixture<MesadaWebApplicationFa
         var token = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(PapelConvite.Comum, _filhoBId, null));
+        var response = await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(PapelConvite.Comum, _filhoBId, null), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
@@ -110,10 +110,10 @@ public sealed class ConvitesEndToEndTests : IClassFixture<MesadaWebApplicationFa
         var token = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(PapelConvite.Comum, _filhoAId, null));
+        await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(PapelConvite.Comum, _filhoAId, null), MesadaJsonOptions.Default);
 
         var listaResponse = await _client.GetAsync("/api/convites");
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<ConviteResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<ConviteResponse>>(MesadaJsonOptions.Default);
 
         Assert.NotNull(lista);
         Assert.Single(lista!);
@@ -126,8 +126,8 @@ public sealed class ConvitesEndToEndTests : IClassFixture<MesadaWebApplicationFa
         var token = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var criarResponse = await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(PapelConvite.Comum, _filhoAId, null));
-        var convite = await criarResponse.Content.ReadFromJsonAsync<ConviteResponse>();
+        var criarResponse = await _client.PostAsJsonAsync("/api/convites", new CriarConviteRequest(PapelConvite.Comum, _filhoAId, null), MesadaJsonOptions.Default);
+        var convite = await criarResponse.Content.ReadFromJsonAsync<ConviteResponse>(MesadaJsonOptions.Default);
 
         var revogarResponse = await _client.DeleteAsync($"/api/convites/{convite!.Id}");
         Assert.Equal(HttpStatusCode.NoContent, revogarResponse.StatusCode);
@@ -137,15 +137,15 @@ public sealed class ConvitesEndToEndTests : IClassFixture<MesadaWebApplicationFa
 
         _client.DefaultRequestHeaders.Authorization = null;
         var resgateResponse = await _client.PostAsJsonAsync(
-            $"/api/auth/convites/{convite.Codigo}/resgatar", new ResgatarConviteRequest("dispositivo-teste-456"));
+            $"/api/auth/convites/{convite.Codigo}/resgatar", new ResgatarConviteRequest("dispositivo-teste-456"), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, resgateResponse.StatusCode);
     }
 
     private async Task<string> LoginMasterAAsync()
     {
-        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA });
+        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA }, MesadaJsonOptions.Default);
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        var body = await response.Content.ReadFromJsonAsync<TokenResponse>(MesadaJsonOptions.Default);
         return body!.Token;
     }
 }

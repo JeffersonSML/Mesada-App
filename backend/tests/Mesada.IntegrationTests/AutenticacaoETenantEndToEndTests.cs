@@ -86,7 +86,7 @@ public sealed class AutenticacaoETenantEndToEndTests : IClassFixture<MesadaWebAp
         var filhosResponse = await _client.GetAsync("/api/filhos");
 
         Assert.Equal(HttpStatusCode.OK, filhosResponse.StatusCode);
-        var filhos = await filhosResponse.Content.ReadFromJsonAsync<List<FilhoDetalheResponse>>();
+        var filhos = await filhosResponse.Content.ReadFromJsonAsync<List<FilhoDetalheResponse>>(MesadaJsonOptions.Default);
 
         Assert.NotNull(filhos);
         Assert.Contains(filhos!, f => f.Id == _filhoAId);
@@ -96,14 +96,14 @@ public sealed class AutenticacaoETenantEndToEndTests : IClassFixture<MesadaWebAp
     [Fact]
     public async Task LoginMaster_ComSenhaErrada_Retorna401()
     {
-        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = "senha-errada" });
+        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = "senha-errada" }, MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
     public async Task LoginMaster_ComEmailInexistente_Retorna401()
     {
-        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = "ninguem@teste.local", senha = "qualquer" });
+        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = "ninguem@teste.local", senha = "qualquer" }, MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
@@ -116,9 +116,9 @@ public sealed class AutenticacaoETenantEndToEndTests : IClassFixture<MesadaWebAp
 
     private async Task<string> LoginMasterAAsync()
     {
-        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA });
+        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA }, MesadaJsonOptions.Default);
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        var body = await response.Content.ReadFromJsonAsync<TokenResponse>(MesadaJsonOptions.Default);
         return body!.Token;
     }
 }

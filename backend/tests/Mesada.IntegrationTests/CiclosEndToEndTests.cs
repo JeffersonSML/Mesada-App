@@ -89,8 +89,8 @@ public sealed class CiclosEndToEndTests : IClassFixture<MesadaWebApplicationFact
 
         // Marca as execuções que o fechamento vai consolidar: bônus cumprido, obrigatória não cumprida (gera multa).
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenComum);
-        await _client.PostAsJsonAsync("/api/execucoes", new MarcarExecucaoRequest(aderenciaBonus.Id, StatusExecucao.Feito, 100m));
-        await _client.PostAsJsonAsync("/api/execucoes", new MarcarExecucaoRequest(aderenciaObrigatoria.Id, StatusExecucao.NaoFeito, 0m));
+        await _client.PostAsJsonAsync("/api/execucoes", new MarcarExecucaoRequest(aderenciaBonus.Id, StatusExecucao.Feito, 100m), MesadaJsonOptions.Default);
+        await _client.PostAsJsonAsync("/api/execucoes", new MarcarExecucaoRequest(aderenciaObrigatoria.Id, StatusExecucao.NaoFeito, 0m), MesadaJsonOptions.Default);
         _client.DefaultRequestHeaders.Authorization = null;
     }
 
@@ -108,10 +108,10 @@ public sealed class CiclosEndToEndTests : IClassFixture<MesadaWebApplicationFact
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var hoje = DateOnly.FromDateTime(DateTime.UtcNow);
-        var response = await _client.PostAsJsonAsync("/api/ciclos/fechar", new FecharCicloRequest(_filhoId, hoje, hoje));
+        var response = await _client.PostAsJsonAsync("/api/ciclos/fechar", new FecharCicloRequest(_filhoId, hoje, hoje), MesadaJsonOptions.Default);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        var ciclo = await response.Content.ReadFromJsonAsync<CicloResponse>();
+        var ciclo = await response.Content.ReadFromJsonAsync<CicloResponse>(MesadaJsonOptions.Default);
 
         Assert.Equal(MesadaBase, ciclo!.MesadaBase);
         Assert.Equal(ValorTarefaBonus, ciclo.SomaBonus);
@@ -129,10 +129,10 @@ public sealed class CiclosEndToEndTests : IClassFixture<MesadaWebApplicationFact
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var hoje = DateOnly.FromDateTime(DateTime.UtcNow);
-        var primeira = await _client.PostAsJsonAsync("/api/ciclos/fechar", new FecharCicloRequest(_filhoId, hoje, hoje));
+        var primeira = await _client.PostAsJsonAsync("/api/ciclos/fechar", new FecharCicloRequest(_filhoId, hoje, hoje), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, primeira.StatusCode);
 
-        var segunda = await _client.PostAsJsonAsync("/api/ciclos/fechar", new FecharCicloRequest(_filhoId, hoje, hoje));
+        var segunda = await _client.PostAsJsonAsync("/api/ciclos/fechar", new FecharCicloRequest(_filhoId, hoje, hoje), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, segunda.StatusCode);
     }
 
@@ -143,7 +143,7 @@ public sealed class CiclosEndToEndTests : IClassFixture<MesadaWebApplicationFact
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var hoje = DateOnly.FromDateTime(DateTime.UtcNow);
-        var response = await _client.PostAsJsonAsync("/api/ciclos/fechar", new FecharCicloRequest(_filhoId, hoje, hoje.AddDays(-1)));
+        var response = await _client.PostAsJsonAsync("/api/ciclos/fechar", new FecharCicloRequest(_filhoId, hoje, hoje.AddDays(-1)), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
@@ -154,7 +154,7 @@ public sealed class CiclosEndToEndTests : IClassFixture<MesadaWebApplicationFact
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var hoje = DateOnly.FromDateTime(DateTime.UtcNow);
-        var response = await _client.PostAsJsonAsync("/api/ciclos/fechar", new FecharCicloRequest(Guid.NewGuid(), hoje, hoje));
+        var response = await _client.PostAsJsonAsync("/api/ciclos/fechar", new FecharCicloRequest(Guid.NewGuid(), hoje, hoje), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
@@ -165,11 +165,11 @@ public sealed class CiclosEndToEndTests : IClassFixture<MesadaWebApplicationFact
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var hoje = DateOnly.FromDateTime(DateTime.UtcNow);
-        await _client.PostAsJsonAsync("/api/ciclos/fechar", new FecharCicloRequest(_filhoId, hoje, hoje));
+        await _client.PostAsJsonAsync("/api/ciclos/fechar", new FecharCicloRequest(_filhoId, hoje, hoje), MesadaJsonOptions.Default);
 
         var historicoResponse = await _client.GetAsync($"/api/ciclos/historico?usuarioComumId={_filhoId}");
         Assert.Equal(HttpStatusCode.OK, historicoResponse.StatusCode);
-        var historico = await historicoResponse.Content.ReadFromJsonAsync<List<CicloResponse>>();
+        var historico = await historicoResponse.Content.ReadFromJsonAsync<List<CicloResponse>>(MesadaJsonOptions.Default);
 
         Assert.NotNull(historico);
         Assert.Single(historico!);
@@ -184,7 +184,7 @@ public sealed class CiclosEndToEndTests : IClassFixture<MesadaWebApplicationFact
 
         var response = await _client.GetAsync($"/api/ciclos/atual?usuarioComumId={_filhoId}");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var atual = await response.Content.ReadFromJsonAsync<CicloAtualResponse>();
+        var atual = await response.Content.ReadFromJsonAsync<CicloAtualResponse>(MesadaJsonOptions.Default);
 
         Assert.Equal(ValorTarefaBonus, atual!.SomaBonus);
         Assert.Equal(MultaTarefaObrigatoria, atual.SomaMultas);
@@ -193,9 +193,9 @@ public sealed class CiclosEndToEndTests : IClassFixture<MesadaWebApplicationFact
 
     private async Task<string> LoginMasterAAsync()
     {
-        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA });
+        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA }, MesadaJsonOptions.Default);
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        var body = await response.Content.ReadFromJsonAsync<TokenResponse>(MesadaJsonOptions.Default);
         return body!.Token;
     }
 }

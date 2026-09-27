@@ -69,14 +69,14 @@ public sealed class GapsCrudEndToEndTests : IClassFixture<MesadaWebApplicationFa
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var criarResponse = await _client.PostAsJsonAsync("/api/filhos",
-            new CriarFilhoRequest("Filho a Remover", null, CicloPeriodicidade.Mensal, 50m, null));
-        var criado = await criarResponse.Content.ReadFromJsonAsync<FilhoDetalheResponse>();
+            new CriarFilhoRequest("Filho a Remover", null, CicloPeriodicidade.Mensal, 50m, null), MesadaJsonOptions.Default);
+        var criado = await criarResponse.Content.ReadFromJsonAsync<FilhoDetalheResponse>(MesadaJsonOptions.Default);
 
         var removerResponse = await _client.DeleteAsync($"/api/filhos/{criado!.Id}");
         Assert.Equal(HttpStatusCode.NoContent, removerResponse.StatusCode);
 
         var listaResponse = await _client.GetAsync("/api/filhos");
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<FilhoDetalheResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<FilhoDetalheResponse>>(MesadaJsonOptions.Default);
         Assert.DoesNotContain(lista!, f => f.Id == criado.Id);
     }
 
@@ -88,13 +88,13 @@ public sealed class GapsCrudEndToEndTests : IClassFixture<MesadaWebApplicationFa
 
         var obterResponse = await _client.GetAsync("/api/familias");
         Assert.Equal(HttpStatusCode.OK, obterResponse.StatusCode);
-        var familia = await obterResponse.Content.ReadFromJsonAsync<FamiliaResponse>();
+        var familia = await obterResponse.Content.ReadFromJsonAsync<FamiliaResponse>(MesadaJsonOptions.Default);
         Assert.Equal(_familiaAId, familia!.Id);
 
         var atualizarResponse = await _client.PutAsJsonAsync("/api/familias",
-            new AtualizarFamiliaRequest("[teste-e2e] Família A Renomeada", CicloPeriodicidade.Quinzenal));
+            new AtualizarFamiliaRequest("[teste-e2e] Família A Renomeada", CicloPeriodicidade.Quinzenal), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.OK, atualizarResponse.StatusCode);
-        var atualizada = await atualizarResponse.Content.ReadFromJsonAsync<FamiliaResponse>();
+        var atualizada = await atualizarResponse.Content.ReadFromJsonAsync<FamiliaResponse>(MesadaJsonOptions.Default);
         Assert.Equal("[teste-e2e] Família A Renomeada", atualizada!.Nome);
         Assert.Equal(CicloPeriodicidade.Quinzenal, atualizada.CicloFechamentoPadrao);
     }
@@ -105,7 +105,7 @@ public sealed class GapsCrudEndToEndTests : IClassFixture<MesadaWebApplicationFa
         var token = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.PutAsJsonAsync("/api/familias", new AtualizarFamiliaRequest("", CicloPeriodicidade.Mensal));
+        var response = await _client.PutAsJsonAsync("/api/familias", new AtualizarFamiliaRequest("", CicloPeriodicidade.Mensal), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
@@ -116,20 +116,20 @@ public sealed class GapsCrudEndToEndTests : IClassFixture<MesadaWebApplicationFa
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var convidarResponse = await _client.PostAsJsonAsync("/api/convites",
-            new CriarConviteRequest(PapelConvite.Master, null, "Segundo Responsável"));
+            new CriarConviteRequest(PapelConvite.Master, null, "Segundo Responsável"), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, convidarResponse.StatusCode);
-        var convite = await convidarResponse.Content.ReadFromJsonAsync<ConviteResponse>();
+        var convite = await convidarResponse.Content.ReadFromJsonAsync<ConviteResponse>(MesadaJsonOptions.Default);
 
         _client.DefaultRequestHeaders.Authorization = null;
         var emailSegundoMaster = $"segundo-master-{Guid.NewGuid():N}@teste.local";
         var resgateResponse = await _client.PostAsJsonAsync(
             $"/api/auth/convites/{convite!.Codigo}/resgatar-master",
-            new ResgatarConviteMasterRequest(emailSegundoMaster, "SenhaForte@123"));
+            new ResgatarConviteMasterRequest(emailSegundoMaster, "SenhaForte@123"), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.OK, resgateResponse.StatusCode);
 
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var listaResponse = await _client.GetAsync("/api/masters");
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<MasterResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<MasterResponse>>(MesadaJsonOptions.Default);
 
         var segundoMaster = Assert.Single(lista!, m => m.Email == emailSegundoMaster);
         Assert.False(segundoMaster.IsFinanceiro);
@@ -142,13 +142,13 @@ public sealed class GapsCrudEndToEndTests : IClassFixture<MesadaWebApplicationFa
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var convidarResponse = await _client.PostAsJsonAsync("/api/convites",
-            new CriarConviteRequest(PapelConvite.Master, null, "Responsável Senha Curta"));
-        var convite = await convidarResponse.Content.ReadFromJsonAsync<ConviteResponse>();
+            new CriarConviteRequest(PapelConvite.Master, null, "Responsável Senha Curta"), MesadaJsonOptions.Default);
+        var convite = await convidarResponse.Content.ReadFromJsonAsync<ConviteResponse>(MesadaJsonOptions.Default);
 
         _client.DefaultRequestHeaders.Authorization = null;
         var response = await _client.PostAsJsonAsync(
             $"/api/auth/convites/{convite!.Codigo}/resgatar-master",
-            new ResgatarConviteMasterRequest($"m-{Guid.NewGuid():N}@teste.local", "123"));
+            new ResgatarConviteMasterRequest($"m-{Guid.NewGuid():N}@teste.local", "123"), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
@@ -159,7 +159,7 @@ public sealed class GapsCrudEndToEndTests : IClassFixture<MesadaWebApplicationFa
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var listaResponse = await _client.GetAsync("/api/masters");
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<MasterResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<MasterResponse>>(MesadaJsonOptions.Default);
         var proprioMaster = Assert.Single(lista!, m => m.Email == _emailMasterA);
 
         var response = await _client.DeleteAsync($"/api/masters/{proprioMaster.Id}");
@@ -173,17 +173,17 @@ public sealed class GapsCrudEndToEndTests : IClassFixture<MesadaWebApplicationFa
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var convidarResponse = await _client.PostAsJsonAsync("/api/convites",
-            new CriarConviteRequest(PapelConvite.Master, null, "Segundo a Desativar"));
-        var convite = await convidarResponse.Content.ReadFromJsonAsync<ConviteResponse>();
+            new CriarConviteRequest(PapelConvite.Master, null, "Segundo a Desativar"), MesadaJsonOptions.Default);
+        var convite = await convidarResponse.Content.ReadFromJsonAsync<ConviteResponse>(MesadaJsonOptions.Default);
 
         _client.DefaultRequestHeaders.Authorization = null;
         var email = $"desativar-{Guid.NewGuid():N}@teste.local";
         await _client.PostAsJsonAsync($"/api/auth/convites/{convite!.Codigo}/resgatar-master",
-            new ResgatarConviteMasterRequest(email, "SenhaForte@123"));
+            new ResgatarConviteMasterRequest(email, "SenhaForte@123"), MesadaJsonOptions.Default);
 
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var listaResponse = await _client.GetAsync("/api/masters");
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<MasterResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<MasterResponse>>(MesadaJsonOptions.Default);
         var segundoMaster = Assert.Single(lista!, m => m.Email == email);
         var financeiro = Assert.Single(lista!, m => m.Email == _emailMasterA);
 
@@ -201,25 +201,25 @@ public sealed class GapsCrudEndToEndTests : IClassFixture<MesadaWebApplicationFa
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var criarResponse = await _client.PostAsJsonAsync("/api/notificacoes/destinatarios",
-            new AdicionarDestinatarioNotificacaoRequest(TipoDestinatarioNotificacao.Email, "avo@teste.local"));
-        var criado = await criarResponse.Content.ReadFromJsonAsync<DestinatarioNotificacaoResponse>();
+            new AdicionarDestinatarioNotificacaoRequest(TipoDestinatarioNotificacao.Email, "avo@teste.local"), MesadaJsonOptions.Default);
+        var criado = await criarResponse.Content.ReadFromJsonAsync<DestinatarioNotificacaoResponse>(MesadaJsonOptions.Default);
 
         var atualizarResponse = await _client.PutAsJsonAsync($"/api/notificacoes/destinatarios/{criado!.Id}",
-            new AtualizarDestinatarioNotificacaoRequest(false));
+            new AtualizarDestinatarioNotificacaoRequest(false), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.OK, atualizarResponse.StatusCode);
-        var atualizado = await atualizarResponse.Content.ReadFromJsonAsync<DestinatarioNotificacaoResponse>();
+        var atualizado = await atualizarResponse.Content.ReadFromJsonAsync<DestinatarioNotificacaoResponse>(MesadaJsonOptions.Default);
         Assert.False(atualizado!.Ativo);
 
         var listaResponse = await _client.GetAsync("/api/notificacoes/destinatarios");
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<DestinatarioNotificacaoResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<DestinatarioNotificacaoResponse>>(MesadaJsonOptions.Default);
         Assert.Contains(lista!, d => d.Id == criado.Id && !d.Ativo);
     }
 
     private async Task<string> LoginMasterAAsync()
     {
-        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA });
+        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA }, MesadaJsonOptions.Default);
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        var body = await response.Content.ReadFromJsonAsync<TokenResponse>(MesadaJsonOptions.Default);
         return body!.Token;
     }
 }

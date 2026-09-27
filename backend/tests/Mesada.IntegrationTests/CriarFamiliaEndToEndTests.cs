@@ -25,13 +25,13 @@ public sealed class CriarFamiliaEndToEndTests : IClassFixture<MesadaWebApplicati
         try
         {
             var response = await client.PostAsJsonAsync("/api/familias",
-                new CriarFamiliaRequest("[teste-e2e] Família Signup", "Master Signup", email, "SenhaForte@123"));
+                new CriarFamiliaRequest("[teste-e2e] Família Signup", "Master Signup", email, "SenhaForte@123"), MesadaJsonOptions.Default);
 
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-            var token = await response.Content.ReadFromJsonAsync<TokenResponse>();
+            var token = await response.Content.ReadFromJsonAsync<TokenResponse>(MesadaJsonOptions.Default);
             Assert.False(string.IsNullOrWhiteSpace(token!.Token));
 
-            var loginResponse = await client.PostAsJsonAsync("/api/auth/master/login", new { email, senha = "SenhaForte@123" });
+            var loginResponse = await client.PostAsJsonAsync("/api/auth/master/login", new { email, senha = "SenhaForte@123" }, MesadaJsonOptions.Default);
             Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
 
             using var scope = _factory.Services.CreateScope();
@@ -58,12 +58,12 @@ public sealed class CriarFamiliaEndToEndTests : IClassFixture<MesadaWebApplicati
         var email = $"master-signup-dup-{Guid.NewGuid():N}@teste.local";
         var request = new CriarFamiliaRequest("[teste-e2e] Família Dup", "Master Dup", email, "SenhaForte@123");
 
-        var primeira = await client.PostAsJsonAsync("/api/familias", request);
+        var primeira = await client.PostAsJsonAsync("/api/familias", request, MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, primeira.StatusCode);
 
         try
         {
-            var segunda = await client.PostAsJsonAsync("/api/familias", request);
+            var segunda = await client.PostAsJsonAsync("/api/familias", request, MesadaJsonOptions.Default);
             Assert.Equal(HttpStatusCode.Conflict, segunda.StatusCode);
         }
         finally
@@ -80,7 +80,7 @@ public sealed class CriarFamiliaEndToEndTests : IClassFixture<MesadaWebApplicati
     {
         var client = _factory.CreateClient();
         var response = await client.PostAsJsonAsync("/api/familias",
-            new CriarFamiliaRequest("[teste-e2e] Família Senha Curta", "Master", $"m-{Guid.NewGuid():N}@teste.local", "123"));
+            new CriarFamiliaRequest("[teste-e2e] Família Senha Curta", "Master", $"m-{Guid.NewGuid():N}@teste.local", "123"), MesadaJsonOptions.Default);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }

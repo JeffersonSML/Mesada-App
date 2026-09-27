@@ -85,12 +85,12 @@ public sealed class DestinatariosNotificacaoEndToEndTests : IClassFixture<Mesada
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var criarResponse = await _client.PostAsJsonAsync("/api/notificacoes/destinatarios",
-            new AdicionarDestinatarioNotificacaoRequest(TipoDestinatarioNotificacao.Email, "avo@teste.local"));
+            new AdicionarDestinatarioNotificacaoRequest(TipoDestinatarioNotificacao.Email, "avo@teste.local"), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, criarResponse.StatusCode);
 
         var listaResponse = await _client.GetAsync("/api/notificacoes/destinatarios");
         Assert.Equal(HttpStatusCode.OK, listaResponse.StatusCode);
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<DestinatarioNotificacaoResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<DestinatarioNotificacaoResponse>>(MesadaJsonOptions.Default);
 
         Assert.NotNull(lista);
         Assert.Single(lista!);
@@ -104,7 +104,7 @@ public sealed class DestinatariosNotificacaoEndToEndTests : IClassFixture<Mesada
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var response = await _client.PostAsJsonAsync("/api/notificacoes/destinatarios",
-            new AdicionarDestinatarioNotificacaoRequest(TipoDestinatarioNotificacao.Email, "nao-e-um-email"));
+            new AdicionarDestinatarioNotificacaoRequest(TipoDestinatarioNotificacao.Email, "nao-e-um-email"), MesadaJsonOptions.Default);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -116,7 +116,7 @@ public sealed class DestinatariosNotificacaoEndToEndTests : IClassFixture<Mesada
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var response = await _client.PostAsJsonAsync("/api/notificacoes/destinatarios",
-            new AdicionarDestinatarioNotificacaoRequest(TipoDestinatarioNotificacao.Telefone, "11999999999"));
+            new AdicionarDestinatarioNotificacaoRequest(TipoDestinatarioNotificacao.Telefone, "11999999999"), MesadaJsonOptions.Default);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -128,14 +128,14 @@ public sealed class DestinatariosNotificacaoEndToEndTests : IClassFixture<Mesada
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var criarResponse = await _client.PostAsJsonAsync("/api/notificacoes/destinatarios",
-            new AdicionarDestinatarioNotificacaoRequest(TipoDestinatarioNotificacao.Telefone, "+5511999999999"));
-        var criado = await criarResponse.Content.ReadFromJsonAsync<DestinatarioNotificacaoResponse>();
+            new AdicionarDestinatarioNotificacaoRequest(TipoDestinatarioNotificacao.Telefone, "+5511999999999"), MesadaJsonOptions.Default);
+        var criado = await criarResponse.Content.ReadFromJsonAsync<DestinatarioNotificacaoResponse>(MesadaJsonOptions.Default);
 
         var removerResponse = await _client.DeleteAsync($"/api/notificacoes/destinatarios/{criado!.Id}");
         Assert.Equal(HttpStatusCode.NoContent, removerResponse.StatusCode);
 
         var listaResponse = await _client.GetAsync("/api/notificacoes/destinatarios");
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<DestinatarioNotificacaoResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<DestinatarioNotificacaoResponse>>(MesadaJsonOptions.Default);
         Assert.Empty(lista!);
     }
 
@@ -151,9 +151,9 @@ public sealed class DestinatariosNotificacaoEndToEndTests : IClassFixture<Mesada
 
     private async Task<string> LoginMasterAAsync()
     {
-        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA });
+        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA }, MesadaJsonOptions.Default);
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        var body = await response.Content.ReadFromJsonAsync<TokenResponse>(MesadaJsonOptions.Default);
         return body!.Token;
     }
 }

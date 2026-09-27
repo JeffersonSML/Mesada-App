@@ -110,9 +110,9 @@ public sealed class ExecucoesEndToEndTests : IClassFixture<MesadaWebApplicationF
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenComum);
 
         var marcarResponse = await _client.PostAsJsonAsync("/api/execucoes",
-            new MarcarExecucaoRequest(_aderenciaComAprovacaoId, StatusExecucao.Feito, 100m));
+            new MarcarExecucaoRequest(_aderenciaComAprovacaoId, StatusExecucao.Feito, 100m), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, marcarResponse.StatusCode);
-        var execucao = await marcarResponse.Content.ReadFromJsonAsync<ExecucaoResponse>();
+        var execucao = await marcarResponse.Content.ReadFromJsonAsync<ExecucaoResponse>(MesadaJsonOptions.Default);
         Assert.Equal(StatusAprovacao.Pendente, execucao!.StatusAprovacao);
         Assert.Equal(20m, execucao.ValorCalculado);
 
@@ -120,12 +120,12 @@ public sealed class ExecucoesEndToEndTests : IClassFixture<MesadaWebApplicationF
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenMaster);
 
         var pendentesResponse = await _client.GetAsync("/api/execucoes/pendentes");
-        var pendentes = await pendentesResponse.Content.ReadFromJsonAsync<List<ExecucaoResponse>>();
+        var pendentes = await pendentesResponse.Content.ReadFromJsonAsync<List<ExecucaoResponse>>(MesadaJsonOptions.Default);
         Assert.Contains(pendentes!, e => e.Id == execucao.Id);
 
         var aprovarResponse = await _client.PostAsync($"/api/execucoes/{execucao.Id}/aprovar", null);
         Assert.Equal(HttpStatusCode.OK, aprovarResponse.StatusCode);
-        var aprovada = await aprovarResponse.Content.ReadFromJsonAsync<ExecucaoResponse>();
+        var aprovada = await aprovarResponse.Content.ReadFromJsonAsync<ExecucaoResponse>(MesadaJsonOptions.Default);
         Assert.Equal(StatusAprovacao.Aprovado, aprovada!.StatusAprovacao);
 
         var aprovarNovamenteResponse = await _client.PostAsync($"/api/execucoes/{execucao.Id}/aprovar", null);
@@ -138,9 +138,9 @@ public sealed class ExecucoesEndToEndTests : IClassFixture<MesadaWebApplicationF
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenComum);
 
         var response = await _client.PostAsJsonAsync("/api/execucoes",
-            new MarcarExecucaoRequest(_aderenciaSemAprovacaoId, StatusExecucao.Feito, 100m));
+            new MarcarExecucaoRequest(_aderenciaSemAprovacaoId, StatusExecucao.Feito, 100m), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        var execucao = await response.Content.ReadFromJsonAsync<ExecucaoResponse>();
+        var execucao = await response.Content.ReadFromJsonAsync<ExecucaoResponse>(MesadaJsonOptions.Default);
         Assert.Equal(StatusAprovacao.NaoAplicavel, execucao!.StatusAprovacao);
         Assert.Equal(5m, execucao.ValorCalculado);
     }
@@ -150,15 +150,15 @@ public sealed class ExecucoesEndToEndTests : IClassFixture<MesadaWebApplicationF
     {
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenComum);
         var marcarResponse = await _client.PostAsJsonAsync("/api/execucoes",
-            new MarcarExecucaoRequest(_aderenciaComAprovacaoId, StatusExecucao.Feito, 100m));
-        var execucao = await marcarResponse.Content.ReadFromJsonAsync<ExecucaoResponse>();
+            new MarcarExecucaoRequest(_aderenciaComAprovacaoId, StatusExecucao.Feito, 100m), MesadaJsonOptions.Default);
+        var execucao = await marcarResponse.Content.ReadFromJsonAsync<ExecucaoResponse>(MesadaJsonOptions.Default);
 
         var tokenMaster = await LoginMasterAAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenMaster);
 
         var rejeitarResponse = await _client.PostAsync($"/api/execucoes/{execucao!.Id}/rejeitar", null);
         Assert.Equal(HttpStatusCode.OK, rejeitarResponse.StatusCode);
-        var rejeitada = await rejeitarResponse.Content.ReadFromJsonAsync<ExecucaoResponse>();
+        var rejeitada = await rejeitarResponse.Content.ReadFromJsonAsync<ExecucaoResponse>(MesadaJsonOptions.Default);
         Assert.Equal(StatusAprovacao.Rejeitado, rejeitada!.StatusAprovacao);
 
         var aprovarResponse = await _client.PostAsync($"/api/execucoes/{execucao.Id}/aprovar", null);
@@ -171,7 +171,7 @@ public sealed class ExecucoesEndToEndTests : IClassFixture<MesadaWebApplicationF
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenOutroComum);
 
         var response = await _client.PostAsJsonAsync("/api/execucoes",
-            new MarcarExecucaoRequest(_aderenciaComAprovacaoId, StatusExecucao.Feito, 100m));
+            new MarcarExecucaoRequest(_aderenciaComAprovacaoId, StatusExecucao.Feito, 100m), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
@@ -181,7 +181,7 @@ public sealed class ExecucoesEndToEndTests : IClassFixture<MesadaWebApplicationF
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenComum);
 
         var response = await _client.PostAsJsonAsync("/api/execucoes",
-            new MarcarExecucaoRequest(_aderenciaSemParcialId, StatusExecucao.Parcial, 50m));
+            new MarcarExecucaoRequest(_aderenciaSemParcialId, StatusExecucao.Parcial, 50m), MesadaJsonOptions.Default);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
@@ -200,7 +200,7 @@ public sealed class ExecucoesEndToEndTests : IClassFixture<MesadaWebApplicationF
 
         var response = await _client.GetAsync("/api/tarefas/minhas");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var minhasTarefas = await response.Content.ReadFromJsonAsync<List<MinhaTarefaResponse>>();
+        var minhasTarefas = await response.Content.ReadFromJsonAsync<List<MinhaTarefaResponse>>(MesadaJsonOptions.Default);
 
         Assert.NotNull(minhasTarefas);
         Assert.Equal(3, minhasTarefas!.Count);
@@ -208,9 +208,9 @@ public sealed class ExecucoesEndToEndTests : IClassFixture<MesadaWebApplicationF
 
     private async Task<string> LoginMasterAAsync()
     {
-        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA });
+        var response = await _client.PostAsJsonAsync("/api/auth/master/login", new { email = _emailMasterA, senha = SenhaMasterA }, MesadaJsonOptions.Default);
         response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadFromJsonAsync<TokenResponse>();
+        var body = await response.Content.ReadFromJsonAsync<TokenResponse>(MesadaJsonOptions.Default);
         return body!.Token;
     }
 }
