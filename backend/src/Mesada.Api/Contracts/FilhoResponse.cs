@@ -2,8 +2,6 @@ using Mesada.Domain.Enums;
 
 namespace Mesada.Api.Contracts;
 
-public sealed record FilhoResponse(Guid Id, string Nome, string? Apelido, decimal SaldoDevedorAcumulado);
-
 public sealed record FilhoDetalheResponse(
     Guid Id,
     string Nome,

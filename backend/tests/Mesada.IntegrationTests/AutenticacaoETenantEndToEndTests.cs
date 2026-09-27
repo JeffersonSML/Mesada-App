@@ -86,7 +86,7 @@ public sealed class AutenticacaoETenantEndToEndTests : IClassFixture<MesadaWebAp
         var filhosResponse = await _client.GetAsync("/api/filhos");
 
         Assert.Equal(HttpStatusCode.OK, filhosResponse.StatusCode);
-        var filhos = await filhosResponse.Content.ReadFromJsonAsync<List<FilhoResponse>>();
+        var filhos = await filhosResponse.Content.ReadFromJsonAsync<List<FilhoDetalheResponse>>();
 
         Assert.NotNull(filhos);
         Assert.Contains(filhos!, f => f.Id == _filhoAId);

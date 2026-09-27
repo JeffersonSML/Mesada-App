@@ -24,11 +24,11 @@ public sealed class FilhosController(
     RemoverFilhoUseCase removerFilho) : ControllerBase
 {
     [HttpGet]
-    [ProducesResponseType<IReadOnlyList<FilhoResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<IReadOnlyList<FilhoDetalheResponse>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Listar(CancellationToken ct)
     {
         var filhos = await listarFilhos.ExecutarAsync(ct);
-        var resposta = filhos.Select(f => new FilhoResponse(f.Id, f.Nome, f.Apelido, f.SaldoDevedorAcumulado));
+        var resposta = filhos.Select(ParaDetalhe);
         return Ok(resposta);
     }
 

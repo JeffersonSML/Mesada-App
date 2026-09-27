@@ -76,7 +76,7 @@ public sealed class GapsCrudEndToEndTests : IClassFixture<MesadaWebApplicationFa
         Assert.Equal(HttpStatusCode.NoContent, removerResponse.StatusCode);
 
         var listaResponse = await _client.GetAsync("/api/filhos");
-        var lista = await listaResponse.Content.ReadFromJsonAsync<List<FilhoResponse>>();
+        var lista = await listaResponse.Content.ReadFromJsonAsync<List<FilhoDetalheResponse>>();
         Assert.DoesNotContain(lista!, f => f.Id == criado.Id);
     }
 
