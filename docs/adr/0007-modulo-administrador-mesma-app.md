@@ -64,8 +64,16 @@ compartilharem o mesmo bundle de frontend:
 - Grupos de acesso (`GrupoAdministrador`) são dados, não código: o grupo
   "Owner" (`sistema = true`) tem acesso total e é o único que não pode ser
   editado/removido; qualquer outro grupo (ex.: "Tecnologia") é criado
-  livremente pelo Owner com as permissões que ele definir, sem precisar de
-  deploy novo.
+  livremente pelo Owner, sem precisar de deploy novo.
+- **Limitação atual, importante**: o dicionário `permissoes` de um grupo
+  (chave→booleano, editável livre na tela de Grupos) ainda não é lido por
+  nenhum endpoint para autorizar uma ação específica — a única checagem de
+  autorização que existe hoje é binária (`ExigirOwner`/`grupo.sistema`),
+  usada nos endpoints de Administradores e Grupos. Ou seja, todo
+  administrador não-Owner tem hoje exatamente o mesmo acesso (leitura),
+  não importa quais chaves de permissão o grupo dele tenha marcadas — as
+  chaves são só um registro para uso futuro, quando existirem mais telas
+  do Módulo Administrador para gatear por permissão granular.
 - As demais telas do Módulo Administrador previstas na spec (Famílias,
   Assinaturas, Suporte, Métricas, Categorias Padrão) continuam sem backend
   e sem tela — ficam para uma etapa futura, quando os endpoints

@@ -253,7 +253,10 @@ o que aquele administrador pode fazer:
   (`permissoes`, um mapa chave→booleano) livre para representar as áreas do
   painel que aquele grupo pode acessar. Só um Owner convida administradores,
   cria/edita/exclui grupos ou reatribui o grupo de um administrador
-  existente.
+  existente. **Ainda não é aplicado**: nenhum endpoint hoje lê essas chaves
+  para decidir o que um administrador pode fazer — a única distinção real
+  de acesso é Owner vs. não-Owner. O mapa de permissões existe pronto para
+  quando houver mais telas administrativas a gatear granularmente.
 
 Esse plano de autenticação/autorização é totalmente separado do login do
 Master/Comum (entidade própria `Administrador`, sem `familia_id`, claims de
