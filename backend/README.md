@@ -50,7 +50,7 @@ dotnet test                              # unitários + integração (precisa do
 dotnet test tests/Mesada.Domain.Tests    # só o motor de cálculo, sem banco
 ```
 
-77 testes no total (27 unitários + 50 de integração). Os testes de integração usam o mesmo Postgres
+95 testes no total (27 unitários + 68 de integração). Os testes de integração usam o mesmo Postgres
 provisionado por `infra/db` — criam família(s) de teste com o prefixo
 `[teste-e2e]`, batem na Api real via `WebApplicationFactory<Program>` e
 removem os dados ao final (`IAsyncLifetime.DisposeAsync`). Os testes dos
@@ -107,12 +107,18 @@ Toda a superfície abaixo é tenant-scoped (`AppDbContext`/`mesada_app`/RLS),
 exceto onde indicado como pré-tenant (`AdminDbContext`/`mesada_admin`).
 
 - **Auth** (pré-tenant): `POST /api/auth/master/login`,
-  `POST /api/auth/convites/{codigo}/resgatar`.
+  `POST /api/auth/convites/{codigo}/resgatar` (filho/Comum),
+  `POST /api/auth/convites/{codigo}/resgatar-master` (segundo responsável).
 - **Signup** (pré-tenant): `POST /api/familias` — cria a Família e o primeiro
   Master (sempre financeiro), já devolvendo um token.
-- **Filhos**: `GET/POST/PUT /api/filhos`.
-- **Convites**: `GET/POST/DELETE(revogar) /api/convites` — gerados pelo
-  Master, resgatados via `POST /api/auth/convites/{codigo}/resgatar`.
+- **Minha Família**: `GET/PUT /api/familias` (nome, ciclo de fechamento padrão).
+- **Filhos**: `GET/POST/PUT/DELETE /api/filhos` (remoção lógica).
+- **Segundo(s) Responsável(is)**: `GET/DELETE /api/masters` — cadastro só
+  via Convite (`papelAlvo: "Master"`); bloqueia autodesativação e desativar
+  o único Master financeiro ativo.
+- **Convites**: `GET/POST/DELETE(revogar) /api/convites` — aceita
+  `papelAlvo` Comum (vincula um filho) ou Master (convida um segundo
+  responsável, resgatado em `/resgatar-master`).
 - **Categorias**: `GET/POST/PUT/DELETE /api/categorias` — modelo híbrido
   (defaults do sistema + customizadas da família); remoção é lógica.
 - **Tarefas**: `GET/POST/PUT/DELETE /api/tarefas`,
@@ -125,15 +131,38 @@ exceto onde indicado como pré-tenant (`AdminDbContext`/`mesada_admin`).
 - **Ciclos**: `POST /api/ciclos/fechar`, `GET /api/ciclos/historico`,
   `GET /api/ciclos/atual` (prévia sem persistir, desde o fim do último
   ciclo fechado).
-- **Notificações**: `GET/POST/DELETE /api/notificacoes/destinatarios` —
+- **Notificações**: `GET/POST/PUT/DELETE /api/notificacoes/destinatarios` —
   e-mails/telefones extras que recebem os alertas da família, além do
   cadastro principal do Master/Comum (não confundir com credenciais dos
   provedores Resend/FCM, que são segredo de infraestrutura via ambiente).
 
+## Módulo Administrador (Etapa 8 — painel interno, grupos de acesso)
+
+Fora de qualquer contexto de família — login, tabelas e RLS totalmente
+segregados do restante da API (ver
+[`docs/adr/0007-modulo-administrador-mesma-app.md`](../docs/adr/0007-modulo-administrador-mesma-app.md)).
+O grupo `"Owner"` (`sistema: true`) tem acesso total e não pode ser editado
+nem removido; qualquer outro grupo (ex.: `"Tecnologia"`) é criado
+livremente pelo Owner.
+
+- **Auth**: `POST /api/admin/auth/login`, `POST /api/admin/auth/trocar-senha`,
+  `PUT /api/admin/auth/email`. Um Administrador recém-criado ou com senha
+  resetada nasce com `deveTrocarSenha: true`.
+- **Administradores**: `GET /api/admin/administradores` (qualquer
+  Administrador), `POST/PUT/DELETE /api/admin/administradores` (só grupo
+  Owner) — convite gera uma senha temporária devolvida uma única vez.
+- **Grupos**: `GET /api/admin/grupos` (qualquer Administrador),
+  `POST/PUT/DELETE /api/admin/grupos` (só grupo Owner).
+- Bootstrap do primeiro Administrador (Owner):
+  [`infra/db/scripts/criar_administrador_owner.sh`](../infra/db/scripts/criar_administrador_owner.sh)
+  — nunca commita senha em texto claro, gera o hash via `pgcrypto` no
+  próprio Postgres.
+
 ## Ainda não implementado (próximos passos do backend)
 
-- Módulo Administrador (endpoints — o `AdminDbContext` já existe e já tem
-  `BYPASSRLS`, falta a superfície HTTP), e endpoints de Planos/Assinatura.
+- Demais telas do Módulo Administrador previstas na spec — Famílias,
+  Assinaturas, Suporte, Métricas, Categorias Padrão — e endpoints de
+  Planos/Assinatura da própria família.
 - Cálculo automático das datas de um ciclo a partir de
   `CicloPeriodicidade` (hoje o Master informa `dataInicio`/`dataFim`
   explicitamente ao fechar) — depende de um agendador de fechamento.

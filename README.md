@@ -51,7 +51,8 @@ ritmo de evolução enquanto o produto é construído por um único time.
 4. Criar o projeto Web (via Lovable) ✅
 5. Criar os projetos mobile nativos (Android e iOS) ✅ (não compilados neste ambiente — ver [ADR 0005](docs/adr/0005-mobile-restricoes-de-ambiente.md))
 6. Configurar os serviços de infraestrutura (push, e-mail, storage, pagamento) ✅ (implementados, sem credenciais reais neste ambiente — ver [ADR 0006](docs/adr/0006-infra-servicos-externos.md))
-7. Validar com dados da família do idealizador antes de abrir para outras famílias
+7. Completar a superfície HTTP do backend (CRUD completo de todas as entidades) e o Módulo Administrador com grupos de acesso ✅ (ver `backend/README.md`; demais telas do Administrador — Famílias/Assinaturas/Suporte/Métricas — ainda pendentes)
+8. Validar com dados da família do idealizador antes de abrir para outras famílias
 
 ## Convenções
 

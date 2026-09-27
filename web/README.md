@@ -41,10 +41,14 @@ Toda a superfície de cadastro do sistema é exclusiva da Web:
   [`docs/especificacao.md`](../docs/especificacao.md#telas-e-dashboards-do-master-web))
 - Gestão de assinatura (Master Financeiro)
 
-O módulo Administrador (ver
+O Módulo Administrador (ver
 [`docs/especificacao.md`](../docs/especificacao.md#telas-do-administrador))
-é tratado como um sistema/projeto Lovable separado, não faz parte deste
-painel do Master.
+vive **neste mesmo projeto Lovable**, em uma área própria (`/admin/...`)
+com autenticação e dados totalmente segregados do painel do Master — ver
+[ADR 0007](../docs/adr/0007-modulo-administrador-mesma-app.md). Só a
+gestão de Administradores e Grupos de acesso está implementada até agora;
+as demais telas previstas na spec (Famílias, Assinaturas, Suporte,
+Métricas, Categorias Padrão) ainda não têm backend.
 
 ## Estado atual (Etapa 4 — concluída)
 
