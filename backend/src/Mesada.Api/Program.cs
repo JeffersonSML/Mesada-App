@@ -49,6 +49,15 @@ builder.Services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationSc
     });
 
 builder.Services.AddAuthorization();
+
+// Sem isso, qualquer frontend servido de outra origem (o preview do Lovable,
+// ou este mesmo app rodando localmente em `vite dev`) tem toda chamada
+// bloqueada pelo navegador antes mesmo de chegar à API — descoberto testando
+// o preview Lovable de verdade contra a API local, não em teoria.
+var origensCorsPermitidas = builder.Configuration.GetSection("Cors:OrigensPermitidas").Get<string[]>()
+    ?? ["http://localhost:5173", "https://id-preview--0ffe502c-7386-4b57-9954-c12b45b20cb9.lovable.app"];
+builder.Services.AddCors(options => options.AddPolicy("MesadaWeb", policy =>
+    policy.WithOrigins(origensCorsPermitidas).AllowAnyHeader().AllowAnyMethod()));
 // JsonStringEnumConverter: por padrão, System.Text.Json serializa enums como
 // número (ex.: CicloPeriodicidade.Mensal vira 2), o que só passou
 // despercebido nos testes de integração porque eles montam os requests com
@@ -85,6 +94,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("MesadaWeb");
 
 app.UseAuthentication();
 app.UseAuthorization();

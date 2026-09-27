@@ -12,7 +12,9 @@ public sealed record ExecucaoResponse(
     decimal PercentualConclusao,
     StatusAprovacao StatusAprovacao,
     decimal? ValorCalculado,
-    decimal? PontosCalculado);
+    decimal? PontosCalculado,
+    string? NomeTarefa,
+    string? NomeFilho);
 
 public sealed record MinhaTarefaResponse(
     Guid TarefaUsuarioId,

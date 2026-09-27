@@ -10,12 +10,19 @@ namespace Mesada.Infrastructure.Repositories;
 public sealed class ExecucoesRepository(AppDbContext db) : IExecucoesRepository
 {
     public Task<Execucao?> ObterPorIdAsync(Guid id, CancellationToken ct = default) =>
-        db.Execucoes.SingleOrDefaultAsync(e => e.Id == id, ct);
+        db.Execucoes
+            .Include(e => e.TarefaUsuario)
+            .ThenInclude(tu => tu!.Tarefa)
+            .Include(e => e.TarefaUsuario)
+            .ThenInclude(tu => tu!.UsuarioComum)
+            .SingleOrDefaultAsync(e => e.Id == id, ct);
 
     public async Task<IReadOnlyList<Execucao>> ListarPendentesAprovacaoAsync(CancellationToken ct = default) =>
         await db.Execucoes
             .Include(e => e.TarefaUsuario)
             .ThenInclude(tu => tu!.Tarefa)
+            .Include(e => e.TarefaUsuario)
+            .ThenInclude(tu => tu!.UsuarioComum)
             .Where(e => e.StatusAprovacao == StatusAprovacao.Pendente)
             .OrderBy(e => e.DataExecucao)
             .ToListAsync(ct);

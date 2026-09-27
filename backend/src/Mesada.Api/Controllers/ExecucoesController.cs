@@ -94,5 +94,6 @@ public sealed class ExecucoesController(
     }
 
     private static ExecucaoResponse ParaResposta(Execucao e) => new(
-        e.Id, e.TarefaUsuarioId, e.DataExecucao, e.Status, e.PercentualConclusao, e.StatusAprovacao, e.ValorCalculado, e.PontosCalculado);
+        e.Id, e.TarefaUsuarioId, e.DataExecucao, e.Status, e.PercentualConclusao, e.StatusAprovacao, e.ValorCalculado, e.PontosCalculado,
+        e.TarefaUsuario?.Tarefa?.Nome, e.TarefaUsuario?.UsuarioComum?.Nome);
 }

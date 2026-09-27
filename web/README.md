@@ -50,34 +50,71 @@ gestão de Administradores e Grupos de acesso está implementada até agora;
 as demais telas previstas na spec (Famílias, Assinaturas, Suporte,
 Métricas, Categorias Padrão) ainda não têm backend.
 
-## Estado atual (Etapa 4 — concluída)
+## Estado atual (Etapa 7 — Painel da Família completo + Painel Administrativo)
 
-Build inicial do Lovable finalizada (`commit ececf747`). Stack efetiva
-escolhida pelo próprio Lovable dentro de React/TypeScript: TanStack Router
-(rotas), React Query (estado de chamadas à API), Tailwind com paleta em
-`oklch`, componentes `shadcn/ui`.
+Duas rodadas de build do Lovable, ambas validadas de ponta a ponta rodando
+o código gerado localmente (`npm install` + `vite dev`) contra o backend
+.NET real (não só por leitura do código nem pelos resumos do próprio
+Lovable). Stack efetiva escolhida pelo Lovable dentro de React/TypeScript:
+TanStack Router (rotas), React Query (estado de chamadas à API), Tailwind
+com paleta em `oklch`, componentes `shadcn/ui`.
 
-Implementado, consumindo a API real:
-- Login do Master (`POST /api/auth/master/login`, JWT em `localStorage`,
-  redirecionamento automático para telas protegidas)
-- Layout autenticado responsivo (navegação lateral no desktop, menu
-  suspenso no mobile) com toda a navegação da spec, tema claro/escuro
-- Gestão de Filhos (lista real via `GET /api/filhos`, destaque visual
-  quando `saldoDevedorAcumulado > 0`)
-- Dashboard da Família (cards de resumo por filho reaproveitando
-  `/api/filhos`, seção de tarefas pendentes como placeholder)
+**Painel da Família** — implementado e validado contra a API real: Login,
+Dashboard, Gestão de Filhos (CRUD completo), Aprovações Pendentes, Controle
+de Acessos (Convites + Masters), Extrato e Histórico (ciclos), Categorias,
+Tarefas (com aderências e sugestão de valor). Como placeholder "Em breve"
+(backend ainda não expõe os endpoints): Assinatura, Gráficos de Desempenho.
 
-Como placeholder "Em breve" (backend ainda não expõe os endpoints):
-Aprovações Pendentes, Extrato e Histórico, Gráficos de Desempenho, Controle
-de Acessos, Assinatura. Conforme os endpoints correspondentes forem criados
-no backend, a Project Knowledge do Lovable deve ser atualizada e uma nova
-mensagem enviada ao projeto para implementar a tela de verdade.
+**Painel Administrativo (`/admin/...`)** — implementado e validado contra a
+API real: Login, troca de senha obrigatória no primeiro acesso, gestão de
+Administradores (convite com senha temporária, edição, desativação) e de
+Grupos de acesso (Owner fixo vs. grupos customizados como "Tecnologia").
+Ver [ADR 0007](../docs/adr/0007-modulo-administrador-mesma-app.md).
 
-**Ainda não validado neste ambiente:** o preview do Lovable rodando contra o
-backend real — o `.NET` só está acessível localmente neste ambiente de
-desenvolvimento (sem deploy público, isso é Etapa 6), então o login e a
-listagem de filhos não puderam ser testados fim a fim contra o preview
-hospedado. A lógica do fluxo foi revisada por leitura, não por execução.
+Essa validação local também encontrou e corrigiu dois bugs reais que só
+apareceriam com o frontend de verdade batendo na API de verdade (nenhum dos
+dois foi pego pelos 95 testes de integração, que chamam a API com tipos C#
+diretamente): a API serializava enums como número em vez da string
+documentada no contrato, e a API não tinha CORS configurado — qualquer
+origem diferente da própria API (o preview do Lovable, ou este projeto
+rodando localmente) teria 100% das chamadas bloqueadas pelo navegador.
+Ambos corrigidos no backend.
+
+### Prints de todas as telas
+
+Capturados com Playwright contra o stack real (backend .NET local + build
+do Lovable rodando localmente), logado de verdade — não são mockups.
+
+**Painel da Família**
+
+| Tela | Print |
+|---|---|
+| Login | ![Login](../docs/screenshots/web/01-login.png) |
+| Dashboard da Família | ![Dashboard](../docs/screenshots/web/02-dashboard.png) |
+| Gestão de Filhos | ![Filhos](../docs/screenshots/web/03-filhos.png) |
+| Aprovações Pendentes | ![Aprovações](../docs/screenshots/web/04-aprovacoes.png) |
+| Controle de Acessos | ![Acessos](../docs/screenshots/web/05-acessos.png) |
+| Extrato e Histórico | ![Extrato](../docs/screenshots/web/06-extrato.png) |
+| Categorias | ![Categorias](../docs/screenshots/web/07-categorias.png) |
+| Tarefas | ![Tarefas](../docs/screenshots/web/08-tarefas.png) |
+| Assinatura (em breve) | ![Assinatura](../docs/screenshots/web/09-assinatura.png) |
+| Gráficos (em breve) | ![Gráficos](../docs/screenshots/web/10-graficos.png) |
+
+**Painel Administrativo**
+
+| Tela | Print |
+|---|---|
+| Login administrativo | ![Login admin](../docs/screenshots/web/11-admin-login.png) |
+| Troca de senha obrigatória | ![Troca de senha](../docs/screenshots/web/12-admin-trocar-senha.png) |
+| Administradores | ![Administradores](../docs/screenshots/web/13-admin-administradores.png) |
+| Grupos de acesso | ![Grupos](../docs/screenshots/web/14-admin-grupos.png) |
+| Meu perfil (Owner) | ![Perfil](../docs/screenshots/web/15-admin-perfil.png) |
+
+Nota sobre o print de "Aprovações Pendentes": o campo que identifica a
+tarefa/filho ainda mostra um identificador técnico em vez do nome — a API
+já foi corrigida para enviar `nomeTarefa`/`nomeFilho`, falta só a mensagem
+de ajuste ser enviada ao Lovable para consumir os campos novos (bloqueado
+no momento por falta de créditos no workspace Lovable).
 
 ## Notas
 

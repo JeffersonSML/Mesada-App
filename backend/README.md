@@ -106,6 +106,18 @@ para o que foi (e não foi) provado.
 Toda a superfície abaixo é tenant-scoped (`AppDbContext`/`mesada_app`/RLS),
 exceto onde indicado como pré-tenant (`AdminDbContext`/`mesada_admin`).
 
+**Convenções cross-cutting** (descobertas rodando um frontend de verdade
+contra a API real, não só pelos testes de integração):
+- Enums sempre como **string** no JSON (`JsonStringEnumConverter` em
+  `Program.cs`), nunca número — é o contrato documentado aqui e o que os
+  clientes reais (Web, mobile) enviam/esperam.
+- **CORS**: origens permitidas configuradas em `Cors:OrigensPermitidas`
+  (`appsettings.json` ou variável de ambiente `Cors__OrigensPermitidas__0`,
+  `__1`, ...) — por padrão inclui o preview do Lovable e
+  `http://localhost:5173` (dev local da Web). Sem isso, qualquer frontend
+  em outra origem tem toda chamada bloqueada pelo navegador antes de chegar
+  à API.
+
 - **Auth** (pré-tenant): `POST /api/auth/master/login`,
   `POST /api/auth/convites/{codigo}/resgatar` (filho/Comum),
   `POST /api/auth/convites/{codigo}/resgatar-master` (segundo responsável).
@@ -126,8 +138,10 @@ exceto onde indicado como pré-tenant (`AdminDbContext`/`mesada_admin`).
   `GET /api/tarefas/sugestao?usuarioComumId=&modoCalculo=`.
 - **Execuções**: `POST /api/execucoes` (Comum marca conclusão),
   `POST /api/execucoes/{id}/aprovar`, `POST /api/execucoes/{id}/rejeitar`
-  (Master), `GET /api/execucoes/pendentes` (Master),
-  `GET /api/tarefas/minhas` (Comum).
+  (Master), `GET /api/execucoes/pendentes` (Master) — resposta inclui
+  `nomeTarefa`/`nomeFilho` já resolvidos (evita o Master ver só o
+  `tarefaUsuarioId` cru na tela de aprovação), `GET /api/tarefas/minhas`
+  (Comum).
 - **Ciclos**: `POST /api/ciclos/fechar`, `GET /api/ciclos/historico`,
   `GET /api/ciclos/atual` (prévia sem persistir, desde o fim do último
   ciclo fechado).
