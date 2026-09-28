@@ -50,7 +50,7 @@ dotnet test                              # unitários + integração (precisa do
 dotnet test tests/Mesada.Domain.Tests    # só o motor de cálculo, sem banco
 ```
 
-95 testes no total (27 unitários + 68 de integração). Os testes de integração usam o mesmo Postgres
+103 testes no total (27 unitários + 76 de integração). Os testes de integração usam o mesmo Postgres
 provisionado por `infra/db` — criam família(s) de teste com o prefixo
 `[teste-e2e]`, batem na Api real via `WebApplicationFactory<Program>` e
 removem os dados ao final (`IAsyncLifetime.DisposeAsync`). Os testes dos
@@ -121,6 +121,15 @@ contra a API real, não só pelos testes de integração):
 - **Auth** (pré-tenant): `POST /api/auth/master/login`,
   `POST /api/auth/convites/{codigo}/resgatar` (filho/Comum),
   `POST /api/auth/convites/{codigo}/resgatar-master` (segundo responsável).
+- **Recuperação/troca de senha do Master** (lacuna encontrada numa auditoria
+  funcional — só o Administrador tinha isso): `POST
+  /api/auth/master/esqueci-senha` (pré-tenant, `{email}`, sempre 204, nunca
+  revela se o e-mail existe; se existir, envia e-mail via `IEmailSender`
+  com link de redefinição), `POST /api/auth/master/redefinir-senha`
+  (pré-tenant, `{token,novaSenha}`, token de alta entropia com só o hash
+  SHA-256 persistido em `redefinicoes_senha_master`, validade 30 min, uso
+  único), `POST /api/auth/master/trocar-senha` (autenticado,
+  `{senhaAtual,novaSenha}`, espelha o do Administrador).
 - **Signup** (pré-tenant): `POST /api/familias` — cria a Família e o primeiro
   Master (sempre financeiro), já devolvendo um token.
 - **Minha Família**: `GET/PUT /api/familias` (nome, ciclo de fechamento padrão).
