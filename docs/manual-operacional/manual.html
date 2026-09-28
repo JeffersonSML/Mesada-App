@@ -153,16 +153,20 @@
     <ol class="sub" type="a">
       <li>Criar conta (cadastrar a família)</li>
       <li>Entrar no painel</li>
+      <li>Recuperar a senha esquecida</li>
       <li>Visão geral do Dashboard</li>
+      <li>Minha Família</li>
       <li>Cadastrar e gerenciar filhos (definir a mesada)</li>
       <li>Criar e organizar categorias</li>
       <li>Criar tarefas, atividades e desafios</li>
       <li>Vincular filhos a uma tarefa</li>
       <li>Convidar filho para o app / convidar outro responsável</li>
+      <li>Aceitar convite de segundo responsável</li>
       <li>Gerenciar responsáveis (Masters)</li>
       <li>Aprovar ou rejeitar tarefas concluídas</li>
       <li>Consultar extrato e fechar o ciclo de mesada</li>
       <li>Configurar notificações extras</li>
+      <li>Meu Perfil: trocar a senha</li>
       <li>Funcionalidades ainda em construção</li>
     </ol>
   </li>
@@ -247,14 +251,43 @@ O sistema é dividido em três frentes, cada uma coberta neste manual:
   <div class="note">Senha ou e-mail incorretos mostram a mensagem "E-mail ou senha incorretos" — sem indicar qual dos dois está errado, por segurança.</div>
 </div>
 
-<h3>2.3 Visão geral do Dashboard</h3>
+<h3>2.3 Recuperar a senha esquecida</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável, mesmo sem conseguir entrar</span><span><b>Onde:</b> <code>/esqueci-senha</code> → link recebido por e-mail → <code>/redefinir-senha</code></span></div>
+  <ol class="steps">
+    <li>Na tela de entrada, clique em <b>"Esqueci minha senha"</b>.</li>
+    <li>Informe o <b>e-mail</b> da conta e clique em <b>"Enviar link"</b>.</li>
+    <li>Abra o e-mail recebido e clique no link de redefinição.</li>
+    <li>Informe a <b>nova senha</b> (mínimo 8 caracteres) e confirme.</li>
+    <li>Clique em <b>"Redefinir senha"</b> e entre com a nova senha.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/25-login-esqueci-senha-link.png"/><div class="cap">Link "Esqueci minha senha" na tela de entrada</div></div>
+  <div class="shot"><img src="../screenshots/web/26-esqueci-senha-sucesso.png"/><div class="cap">Mensagem exibida após enviar o e-mail — sempre a mesma, exista ou não a conta</div></div>
+  <div class="shot"><img src="../screenshots/web/27-redefinir-senha-form.png"/><div class="cap">Formulário de nova senha, aberto a partir do link do e-mail</div></div>
+  <div class="note"><b>Por segurança:</b> a mensagem após enviar o e-mail é sempre a mesma, exista ou não uma conta com aquele endereço — isso evita que alguém descubra quais e-mails têm conta no sistema. O link de redefinição expira em 30 minutos e só pode ser usado uma vez.</div>
+</div>
+
+<h3>2.4 Visão geral do Dashboard</h3>
 <div class="flow">
   <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/dashboard</code>, primeira tela após entrar</span></div>
   <p>Não é um fluxo de ação — é o resumo do estado atual da família: quantos filhos, saldo devedor total, quantos filhos estão com dívida, e o saldo individual de cada um.</p>
   <div class="shot"><img src="../screenshots/web/02-dashboard.png"/><div class="cap">Dashboard com dados reais de uma família com 2 filhos</div></div>
 </div>
 
-<h3>2.4 Cadastrar e gerenciar filhos (definir a mesada)</h3>
+<h3>2.5 Minha Família</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/familia</code> → "Minha Família"</span></div>
+  <p>Edita o nome da família e o ciclo de fechamento padrão usado como sugestão ao cadastrar um novo filho.</p>
+  <ol class="steps">
+    <li>Abra <b>"Minha Família"</b> no menu lateral.</li>
+    <li>Altere o <b>Nome da família</b> e/ou o <b>Ciclo de fechamento padrão</b> (Semanal, Quinzenal, Mensal ou Personalizado).</li>
+    <li>Clique em <b>"Salvar"</b>.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/28-minha-familia.png"/><div class="cap">Tela de edição do nome da família e ciclo padrão</div></div>
+  <div class="note">Mudar o ciclo padrão aqui não altera o ciclo de fechamento de filhos já cadastrados — só passa a ser a sugestão para os próximos.</div>
+</div>
+
+<h3>2.6 Cadastrar e gerenciar filhos (definir a mesada)</h3>
 <div class="flow">
   <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/filhos</code> → "Gestão de Filhos"</span></div>
   <p>É aqui que se define a mesada de cada filho: o valor-base do ciclo, a periodicidade de fechamento e, se algum dia usar tarefas por pontos, o valor de cada ponto em reais.</p>
@@ -273,7 +306,7 @@ O sistema é dividido em três frentes, cada uma coberta neste manual:
   <b>Remover:</b> clique no ícone de lixeira — remoção lógica (o histórico da família não se perde).</p>
 </div>
 
-<h3>2.5 Criar e organizar categorias</h3>
+<h3>2.7 Criar e organizar categorias</h3>
 <div class="flow">
   <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/categorias</code></span></div>
   <p>Categorias agrupam as tarefas (Casa, Escola, Esporte, etc.). O sistema já vem com categorias padrão — marcadas como <b>"Padrão"</b> — que não podem ser editadas nem removidas, iguais para todas as famílias.</p>
@@ -287,7 +320,7 @@ O sistema é dividido em três frentes, cada uma coberta neste manual:
   <p>Categorias customizadas podem ser editadas (ícone de lápis) ou removidas (ícone de lixeira) a qualquer momento.</p>
 </div>
 
-<h3>2.6 Criar tarefas, atividades e desafios</h3>
+<h3>2.8 Criar tarefas, atividades e desafios</h3>
 <div class="flow">
   <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/tarefas</code></span></div>
   <p>É o coração do sistema: cada tarefa define como ela é recompensada (ou multada) quando um filho a cumpre ou deixa de cumprir.</p>
@@ -307,7 +340,7 @@ O sistema é dividido em três frentes, cada uma coberta neste manual:
   <div class="shot"><img src="../screenshots/web/08-tarefas.png"/><div class="cap">Tarefas cadastradas: bônus, obrigatória com multa, e uma em modo Pontos</div></div>
 </div>
 
-<h3>2.7 Vincular filhos a uma tarefa</h3>
+<h3>2.9 Vincular filhos a uma tarefa</h3>
 <div class="flow">
   <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/tarefas</code> → botão "Filhos" no card da tarefa</span></div>
   <p>Uma tarefa só gera valor para um filho depois de ele estar <b>vinculado</b> (aderente) a ela — é possível ter tarefas diferentes para cada filho, ou a mesma tarefa para todos.</p>
@@ -320,7 +353,7 @@ O sistema é dividido em três frentes, cada uma coberta neste manual:
   <div class="shot"><img src="../screenshots/web/21-tarefas-vincular-filhos.png"/><div class="cap">Vinculando Miguel e Sofia à tarefa "Arrumar o quarto"</div></div>
 </div>
 
-<h3>2.8 Convidar filho para o app / convidar outro responsável</h3>
+<h3>2.10 Convidar filho para o app / convidar outro responsável</h3>
 <div class="flow">
   <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/acessos</code> → aba "Convites"</span></div>
   <p>O filho não tem e-mail nem senha — ele entra no app mobile usando um código de convite. Um segundo Responsável (ex.: cônjuge) também entra por convite.</p>
@@ -331,18 +364,33 @@ O sistema é dividido em três frentes, cada uma coberta neste manual:
     <li>Clique em <b>"Gerar"</b>.</li>
   </ol>
   <div class="shot"><img src="../screenshots/web/24-acessos-gerar-convite.png"/><div class="cap">Escolhendo o tipo de convite</div></div>
-  <div class="note">O código gerado aparece grande na tela, com botão de copiar — compartilhe por WhatsApp, mensagem, etc. Cada código expira em um prazo determinado e pode ser revogado antes de ser usado.</div>
+  <div class="note">O código gerado aparece grande na tela, com botão de copiar — compartilhe por WhatsApp, mensagem, etc. Cada código expira em um prazo determinado e pode ser revogado antes de ser usado. Para um convite de <b>"Segundo responsável"</b>, também aparece um <b>link pronto para compartilhar</b> — quem recebe só precisa abri-lo, o código já vem preenchido.</div>
+  <div class="shot"><img src="../screenshots/web/30-acessos-convite-responsavel-link.png"/><div class="cap">Convite de segundo responsável, com o código e o link para compartilhar</div></div>
   <div class="shot"><img src="../screenshots/web/05-acessos.png"/><div class="cap">Lista de convites: pendente, utilizado e a opção de revogar</div></div>
 </div>
 
-<h3>2.9 Gerenciar responsáveis (Masters)</h3>
+<h3>2.11 Aceitar convite de segundo responsável</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> a pessoa convidada (ainda sem conta)</span><span><b>Onde:</b> <code>/convite-responsavel</code></span></div>
+  <p>Diferente do convite de filho (que só vincula um dispositivo do app mobile), o convite de responsável cria uma conta nova com e-mail e senha próprios.</p>
+  <ol class="steps">
+    <li>Abra o link recebido (ou acesse <code>/convite-responsavel</code> e informe o <b>código do convite</b> manualmente).</li>
+    <li>Informe <b>e-mail</b> e uma <b>senha</b> de pelo menos 8 caracteres, e confirme.</li>
+    <li>Clique em <b>"Aceitar convite"</b>.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/31-convite-responsavel-form.png"/><div class="cap">Tela de aceite do convite, com o código já preenchido a partir do link</div></div>
+  <div class="note"><b>Resultado:</b> a conta do novo Responsável é criada na mesma família de quem enviou o convite, e a pessoa já entra direto no Dashboard.</div>
+  <div class="warn"><b>E-mail já cadastrado:</b> a tela avisa e sugere entrar na conta existente em vez de criar outra.</div>
+</div>
+
+<h3>2.12 Gerenciar responsáveis (Masters)</h3>
 <div class="flow">
   <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável (desativar é bloqueado em certos casos)</span><span><b>Onde:</b> <code>/acessos</code> → aba "Responsáveis"</span></div>
   <p>Não existe cadastro direto de um segundo responsável — ele só entra por convite (seção anterior). Aqui você só visualiza e pode desativar.</p>
   <div class="note"><b>Bloqueios de segurança:</b> não é possível desativar a própria conta, nem desativar o único Responsável Financeiro ativo da família — sempre precisa haver pelo menos um.</div>
 </div>
 
-<h3>2.10 Aprovar ou rejeitar tarefas concluídas</h3>
+<h3>2.13 Aprovar ou rejeitar tarefas concluídas</h3>
 <div class="flow">
   <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/aprovacoes</code></span></div>
   <p>Toda tarefa marcada como concluída pelo filho no app mobile, que exija aprovação, aparece aqui aguardando decisão do Responsável.</p>
@@ -355,7 +403,7 @@ O sistema é dividido em três frentes, cada uma coberta neste manual:
   <div class="pending"><b>Ajuste conhecido:</b> nesta versão a lista ainda identifica a execução por um código técnico em vez do nome do filho/tarefa — a API já foi corrigida para enviar os nomes, falta só a tela consumir esse campo novo.</div>
 </div>
 
-<h3>2.11 Consultar extrato e fechar o ciclo de mesada</h3>
+<h3>2.14 Consultar extrato e fechar o ciclo de mesada</h3>
 <div class="flow">
   <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/extrato</code></span></div>
   <ol class="steps">
@@ -367,7 +415,7 @@ O sistema é dividido em três frentes, cada uma coberta neste manual:
   <div class="warn"><b>Atenção:</b> fechar um ciclo é definitivo — os valores daquele período não podem ser recalculados depois.</div>
 </div>
 
-<h3>2.12 Configurar notificações extras</h3>
+<h3>2.15 Configurar notificações extras</h3>
 <div class="flow">
   <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/notificacoes</code></span></div>
   <p>Além do e-mail principal do Responsável, é possível cadastrar e-mails e telefones extras (ex.: o outro avô, uma babá) para também receberem os alertas da família.</p>
@@ -383,7 +431,20 @@ O sistema é dividido em três frentes, cada uma coberta neste manual:
   <p>Cada destinatário tem um interruptor para <b>ativar/desativar</b> sem precisar remover, e um botão para <b>remover</b> definitivamente (com confirmação).</p>
 </div>
 
-<h3>2.13 Funcionalidades ainda em construção</h3>
+<h3>2.16 Meu Perfil: trocar a senha</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável, já logado</span><span><b>Onde:</b> <code>/perfil</code> → "Meu Perfil"</span></div>
+  <p>Para trocar a senha sem precisar do fluxo por e-mail — usado quando o Responsável ainda lembra a senha atual, mas quer definir uma nova.</p>
+  <ol class="steps">
+    <li>Abra <b>"Meu Perfil"</b> no menu lateral.</li>
+    <li>Informe a <b>Senha atual</b>, a <b>Nova senha</b> (mínimo 8 caracteres) e confirme.</li>
+    <li>Clique em <b>"Trocar senha"</b>.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/29-meu-perfil-trocar-senha.png"/><div class="cap">Tela de troca de senha, com os três campos</div></div>
+  <div class="note">Se a <b>senha atual</b> informada estiver errada, a tela mostra o erro e mantém você logado — não desconecta a sessão.</div>
+</div>
+
+<h3>2.17 Funcionalidades ainda em construção</h3>
 <div class="flow">
   <p><b>Assinatura</b> e <b>Gráficos de Desempenho</b> aparecem no menu, mas ainda mostram a tela "Em breve" — o backend para essas duas ainda não foi construído.</p>
   <div class="shot"><img src="../screenshots/web/09-assinatura.png"/><div class="cap">Placeholder da tela de Assinatura</div></div>

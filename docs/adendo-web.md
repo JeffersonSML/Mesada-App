@@ -64,7 +64,45 @@ Lovable.
 Criar conta (cadastro da família), Login, Dashboard, Gestão de Filhos (CRUD
 completo), Aprovações Pendentes, Controle de Acessos (Convites + Masters),
 Extrato e Histórico (ciclos), Categorias, Tarefas (com aderências e
-sugestão de valor), Notificações (destinatários extra de alerta).
+sugestão de valor), Notificações (destinatários extra de alerta), Minha
+Família (nome + ciclo de fechamento padrão), Meu Perfil (trocar senha
+logado), Esqueci minha senha / Redefinir senha (recuperação por e-mail) e
+Aceitar convite de responsável (resgate do convite de um segundo Master).
+
+### Auditoria funcional: telas x endpoints (rodada de fechamento de lacunas)
+
+Depois da primeira rodada de construção das telas, foi feita uma auditoria
+sistemática — todo `[Http*]` de todos os 14 Controllers do backend
+cross-referenciado contra toda tela real do frontend — para confirmar que
+nenhuma funcionalidade exposta pela API tinha ficado sem tela. Resultado: 3
+lacunas reais, todas fechadas nesta rodada.
+
+1. **Resgatar convite de "Segundo responsável" (🔴 crítico)** — o backend já
+   tinha `POST /api/auth/convites/{codigo}/resgatar-master`, mas não havia
+   nenhuma tela para usá-lo: o fluxo de convidar um segundo responsável
+   estava quebrado de ponta a ponta (o convite era gerado em
+   `/acessos`, mas não existia como resgatá-lo). Corrigido com a tela
+   `/convite-responsavel` + um link compartilhável (além do código) na
+   própria tela de geração do convite.
+2. **"Minha Família" (🟡 médio)** — `GET/PUT /api/familias` já existia
+   (nome + ciclo de fechamento padrão da família), mas nenhuma tela expunha
+   essa edição. Corrigido com a tela `/familia`.
+3. **Troca/recuperação de senha do Master (🔴 crítico)** — diferente do
+   Administrador (que já tinha troca de senha), o Master não tinha
+   nenhuma forma de trocar ou recuperar a própria senha — nem tela, nem
+   endpoint. Esta foi a única lacuna que exigiu trabalho de backend, não só
+   de tela: três endpoints novos (`POST /api/auth/master/esqueci-senha`,
+   `POST /api/auth/master/redefinir-senha`, `POST
+   /api/auth/master/trocar-senha` — detalhados no
+   [`backend/README.md`](../backend/README.md#endpoints-etapa-7--orquestração-http-dos-casos-de-uso))
+   e duas telas novas (`/esqueci-senha`, `/redefinir-senha`) + a seção
+   "Trocar senha" em `/perfil`.
+
+Todo o fluxo de recuperação por e-mail foi validado de ponta a ponta contra
+um servidor local que imita o contrato do Resend (o mesmo usado pelos
+testes automatizados do backend): "esqueci minha senha" → e-mail recebido
+com o link real → token extraído do e-mail → redefinição → login com a
+nova senha.
 
 **Painel do Master — ainda "Em breve" (backend não expõe os endpoints):**
 Assinatura, Gráficos de Desempenho.
@@ -109,14 +147,21 @@ do Lovable rodando localmente), logado de verdade — não são mockups.
 |---|---|
 | Criar conta (cadastro da família) | ![Cadastro](screenshots/web/16-cadastro.png) |
 | Login | ![Login](screenshots/web/01-login.png) |
+| Login — link "Esqueci minha senha" | ![Login com link de recuperação](screenshots/web/25-login-esqueci-senha-link.png) |
+| Esqueci minha senha | ![Esqueci minha senha](screenshots/web/26-esqueci-senha-sucesso.png) |
+| Redefinir senha (via link do e-mail) | ![Redefinir senha](screenshots/web/27-redefinir-senha-form.png) |
 | Dashboard da Família | ![Dashboard](screenshots/web/02-dashboard.png) |
+| Minha Família | ![Minha Família](screenshots/web/28-minha-familia.png) |
 | Gestão de Filhos | ![Filhos](screenshots/web/03-filhos.png) |
 | Aprovações Pendentes | ![Aprovações](screenshots/web/04-aprovacoes.png) |
+| Controle de Acessos — convite de segundo responsável | ![Convite de responsável](screenshots/web/30-acessos-convite-responsavel-link.png) |
+| Aceitar convite de responsável | ![Aceitar convite](screenshots/web/31-convite-responsavel-form.png) |
 | Controle de Acessos | ![Acessos](screenshots/web/05-acessos.png) |
 | Extrato e Histórico | ![Extrato](screenshots/web/06-extrato.png) |
 | Categorias | ![Categorias](screenshots/web/07-categorias.png) |
 | Tarefas | ![Tarefas](screenshots/web/08-tarefas.png) |
 | Notificações | ![Notificações](screenshots/web/20-notificacoes-lista.png) |
+| Meu Perfil — trocar senha | ![Meu Perfil](screenshots/web/29-meu-perfil-trocar-senha.png) |
 | Assinatura (em breve) | ![Assinatura](screenshots/web/09-assinatura.png) |
 | Gráficos (em breve) | ![Gráficos](screenshots/web/10-graficos.png) |
 
