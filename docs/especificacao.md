@@ -5,6 +5,21 @@
 > atualize este arquivo a partir da fonte antes de iniciar uma nova etapa de
 > desenvolvimento.
 
+Este arquivo é a espinha dorsal da documentação funcional do produto —
+visão geral, perfis de usuário, lógica de cálculo, modelo de dados e telas
+que valem para todas as plataformas. Duas plataformas têm um comportamento
+específico o bastante para merecer um adendo próprio, que complementa (não
+substitui) o que está aqui:
+
+- **[Adendo Web](adendo-web.md)** — Painel do Master e Painel
+  Administrativo, os dois construídos e mantidos via Lovable.
+- **[Adendo Mobile](adendo-mobile.md)** — apps nativos Android/iOS,
+  exclusivos do usuário Comum (filho), com fluxo offline-first.
+
+As decisões de arquitetura que não cabem numa especificação funcional
+(por que Lovable em vez de Angular, por que RLS, etc.) ficam nos
+[ADRs](adr/).
+
 ## Visão Geral
 
 Aplicação para controle da mesada dos filhos. A mesada tem um valor base fixo
@@ -198,9 +213,9 @@ necessidade de deploy para alterar valores.
 |---|---|
 | Backend | .NET C# — API RESTful multi-tenant |
 | Banco de dados | PostgreSQL com Row Level Security |
-| Web | Angular (build/deploy via Lovable) |
-| Mobile Android | Kotlin nativo |
-| Mobile iOS | Swift nativo |
+| Web | React + TypeScript, via Lovable (ver [adendo Web](adendo-web.md)) |
+| Mobile Android | Kotlin nativo (ver [adendo Mobile](adendo-mobile.md)) |
+| Mobile iOS | Swift nativo (ver [adendo Mobile](adendo-mobile.md)) |
 | Offline (mobile) | SQLite local + fila de sincronização |
 | Autenticação | OAuth2/JWT + biometria no mobile |
 | Pagamentos | Asaas ou Stripe, atrás de `IPaymentProvider` |
@@ -308,3 +323,6 @@ o mesmo perfil.
 | Gráficos de Desempenho | Desempenho por categoria de tarefa, comparação entre filhos |
 | Aprovações Pendentes | Fila de tarefas aguardando aprovação, com evidência anexada |
 | Assinatura (só Master Financeiro) | Plano atual, forma de pagamento, histórico de cobrança, cancelamento |
+
+Esta tabela é a visão de spec (o que o produto deve ter). Estado real de
+implementação de cada tela, com prints, em [`adendo-web.md`](adendo-web.md#estado-de-implementação).

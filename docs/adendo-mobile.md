@@ -55,3 +55,31 @@ tarefa aprovada/rejeitada, mesada fechada, tarefa avulsa expirando.
 | Detalhe da Tarefa | Descrição, prazo, pontos/valor, campo de evidência (foto ou integração), botão de conclusão |
 | Histórico | Tarefas de ciclos anteriores e extrato simplificado da mesada |
 | Meu Saldo | Valor do ciclo atual, saldo devedor acumulado (se houver), próxima data de fechamento |
+
+## Estado de Implementação
+
+Mesma disciplina do Painel Web (ver [`adendo-web.md`](adendo-web.md)): só a
+tela **Login/Convite** fala de verdade com o backend hoje
+(`POST /api/auth/convites/{codigo}/resgatar` — único endpoint que existe
+para o usuário Comum). **Minhas Tarefas** e **Detalhe da Tarefa** já têm
+toda a estrutura real (persistência local, fila de sincronização, captura
+de foto), mas exibem dados de exemplo até o backend expor um endpoint de
+listagem de tarefas/execuções para o Comum. **Histórico** e **Meu Saldo**
+são placeholders "Em breve" — sem números inventados.
+
+Diferente da Web, nenhum dos dois apps foi compilado/rodado de verdade
+neste ambiente de desenvolvimento — limitações de rede e de plataforma
+(não há macOS disponível para iOS), não do código em si:
+
+- **Android**: o módulo `core-logic` (lógica pura, sem Android SDK) foi
+  compilado e testado de verdade com `kotlinc`. O módulo `app` (Compose,
+  Room, Retrofit) não pôde ser compilado aqui — domínio de dependências
+  AndroidX bloqueado por política de rede do sandbox. Detalhes em
+  [`mobile-android/README.md`](../mobile-android/README.md).
+- **iOS**: nenhum arquivo foi compilado — Swift/Xcode exigem macOS, que não
+  existe neste ambiente. Código-fonte organizado e um `Package.swift` para
+  a parte portável (`MesadaCore`, tradução 1:1 do `core-logic` Android),
+  prontos para virar um projeto Xcode na primeira máquina com Mac. Detalhes
+  em [`mobile-ios/README.md`](../mobile-ios/README.md).
+
+Nenhum print de tela: sem build rodando, não há preview real para capturar.

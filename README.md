@@ -9,8 +9,11 @@ Cada família é um tenant isolado (`familia_id`) via Row Level Security no Post
 ## Especificação
 
 A especificação funcional completa (visão geral, perfis de usuário, lógica de
-cálculo, modelo de dados, telas) está versionada em [`docs/especificacao.md`](docs/especificacao.md)
-e no adendo mobile em [`docs/adendo-mobile.md`](docs/adendo-mobile.md).
+cálculo, modelo de dados, telas) está versionada em [`docs/especificacao.md`](docs/especificacao.md),
+com um adendo por plataforma que tem comportamento específico o bastante
+para merecer o próprio documento: [`docs/adendo-web.md`](docs/adendo-web.md)
+(Painel do Master + Painel Administrativo) e
+[`docs/adendo-mobile.md`](docs/adendo-mobile.md) (Android/iOS).
 
 ## Estrutura do repositório
 
@@ -20,11 +23,11 @@ ritmo de evolução enquanto o produto é construído por um único time.
 
 ```
 /backend          API .NET C# (RESTful, multi-tenant, motor de cálculo de mesada)
-/web              Painel web do Master — código vive no Lovable; ver web/README.md
+/web              Painel do Master + Painel Administrativo — código vive no Lovable; ver web/README.md
 /mobile-android   App nativo Kotlin (uso exclusivo do usuário Comum/filho)
 /mobile-ios       App nativo Swift (uso exclusivo do usuário Comum/filho)
 /infra            Infraestrutura: schema/migrações PostgreSQL, IaC, scripts de deploy
-/docs             Especificação funcional, ADRs (decisões de arquitetura), diagramas
+/docs             Especificação funcional + adendos (Web, Mobile), ADRs (decisões de arquitetura)
 /.github/workflows CI/CD
 ```
 
@@ -34,9 +37,9 @@ ritmo de evolução enquanto o produto é construído por um único time.
 |---|---|
 | Backend | .NET C# — API RESTful multi-tenant |
 | Banco de dados | PostgreSQL com Row Level Security |
-| Web | React + TypeScript, via [Lovable](https://lovable.dev) (ver [ADR 0004](docs/adr/0004-web-via-lovable.md)) |
-| Mobile Android | Kotlin nativo |
-| Mobile iOS | Swift nativo |
+| Web | React + TypeScript, via [Lovable](https://lovable.dev) (ver [adendo Web](docs/adendo-web.md), [ADR 0004](docs/adr/0004-web-via-lovable.md)) |
+| Mobile Android | Kotlin nativo (ver [adendo Mobile](docs/adendo-mobile.md)) |
+| Mobile iOS | Swift nativo (ver [adendo Mobile](docs/adendo-mobile.md)) |
 | Offline (mobile) | SQLite local + fila de sincronização |
 | Autenticação | OAuth2/JWT + biometria no mobile |
 | Pagamentos | Stone/Pagar.me, atrás de `IPaymentProvider` (ver [ADR 0006](docs/adr/0006-infra-servicos-externos.md)) |

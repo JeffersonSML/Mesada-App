@@ -66,7 +66,7 @@ repositórios Maven) e rodei. Os 8 casos passaram.
 Stack: Kotlin, Jetpack Compose (Material3), Navigation-Compose, Retrofit +
 OkHttp + kotlinx.serialization, Room, DataStore (token), `androidx.biometric`.
 
-Segue a mesma disciplina do Painel Web (Lovable, ver `web/README.md`): só a
+Segue a mesma disciplina do Painel Web (Lovable, ver `docs/adendo-web.md`): só a
 tela **Login/Convite** fala de verdade com o backend
 (`POST /api/auth/convites/{codigo}/resgatar` — o único endpoint que existe
 hoje para o usuário Comum). **Minhas Tarefas** e **Detalhe da Tarefa** já
