@@ -61,9 +61,10 @@ outro) — não apenas leitura de código nem confiança nos resumos do próprio
 Lovable.
 
 **Painel do Master — implementado e validado contra a API real:**
-Login, Dashboard, Gestão de Filhos (CRUD completo), Aprovações Pendentes,
-Controle de Acessos (Convites + Masters), Extrato e Histórico (ciclos),
-Categorias, Tarefas (com aderências e sugestão de valor).
+Criar conta (cadastro da família), Login, Dashboard, Gestão de Filhos (CRUD
+completo), Aprovações Pendentes, Controle de Acessos (Convites + Masters),
+Extrato e Histórico (ciclos), Categorias, Tarefas (com aderências e
+sugestão de valor), Notificações (destinatários extra de alerta).
 
 **Painel do Master — ainda "Em breve" (backend não expõe os endpoints):**
 Assinatura, Gráficos de Desempenho.
@@ -106,6 +107,7 @@ do Lovable rodando localmente), logado de verdade — não são mockups.
 
 | Tela | Print |
 |---|---|
+| Criar conta (cadastro da família) | ![Cadastro](screenshots/web/16-cadastro.png) |
 | Login | ![Login](screenshots/web/01-login.png) |
 | Dashboard da Família | ![Dashboard](screenshots/web/02-dashboard.png) |
 | Gestão de Filhos | ![Filhos](screenshots/web/03-filhos.png) |
@@ -114,6 +116,7 @@ do Lovable rodando localmente), logado de verdade — não são mockups.
 | Extrato e Histórico | ![Extrato](screenshots/web/06-extrato.png) |
 | Categorias | ![Categorias](screenshots/web/07-categorias.png) |
 | Tarefas | ![Tarefas](screenshots/web/08-tarefas.png) |
+| Notificações | ![Notificações](screenshots/web/20-notificacoes-lista.png) |
 | Assinatura (em breve) | ![Assinatura](screenshots/web/09-assinatura.png) |
 | Gráficos (em breve) | ![Gráficos](screenshots/web/10-graficos.png) |
 
@@ -126,6 +129,16 @@ do Lovable rodando localmente), logado de verdade — não são mockups.
 | Administradores | ![Administradores](screenshots/web/13-admin-administradores.png) |
 | Grupos de acesso | ![Grupos](screenshots/web/14-admin-grupos.png) |
 | Meu perfil (Owner) | ![Perfil](screenshots/web/15-admin-perfil.png) |
+
+## Manual operacional (para uso, não para manutenção)
+
+Este adendo é documentação técnica — para uma pessoa entender como usar
+cada tela, passo a passo, com print de cada uma explicando como operar,
+existe um manual operacional em PDF, gerado a partir do código-fonte em
+[`docs/manual-operacional/`](manual-operacional/) (o PDF em si não é
+versionado, por ser artefato de build — ver
+[`docs/manual-operacional/README.md`](manual-operacional/README.md) para
+regerar).
 
 ## Links do projeto Lovable
 

@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<title>Manual Operacional — Mesada App</title>
+<style>
+  @page { size: A4; margin: 22mm 18mm 20mm 18mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1c2321;
+    line-height: 1.5;
+    font-size: 12.5px;
+  }
+  h1, h2, h3, h4 { color: #12312a; font-weight: 800; line-height: 1.25; }
+  h1 { font-size: 26px; }
+  h2 {
+    font-size: 19px;
+    border-bottom: 2px solid #e2a83a;
+    padding-bottom: 6px;
+    margin-top: 34px;
+    page-break-before: always;
+  }
+  h2:first-of-type { page-break-before: auto; }
+  h3 {
+    font-size: 15px;
+    margin-top: 26px;
+    color: #0f5c46;
+    page-break-after: avoid;
+  }
+  h4 { font-size: 12.5px; margin: 14px 0 6px; }
+  p { margin: 6px 0; }
+  .cover {
+    height: 245mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+  .cover .badge {
+    display: inline-block;
+    margin: 0 auto 18px;
+    width: 64px; height: 64px;
+    border-radius: 16px;
+    background: #12312a;
+    color: #e2a83a;
+    font-size: 30px;
+    line-height: 64px;
+  }
+  .cover h1 { font-size: 34px; margin-bottom: 4px; }
+  .cover .subtitle { font-size: 15px; color: #4a5a55; margin-bottom: 40px; }
+  .cover .meta { font-size: 11px; color: #7a8a85; margin-top: 60px; }
+  .toc { page-break-before: always; page-break-after: always; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin: 5px 0; }
+  .toc .sub { list-style: none; margin-left: -16px; }
+  .toc .sub li { margin: 2px 0; font-size: 11.5px; color: #3a4a45; }
+  .flow {
+    border: 1px solid #dfe6e2;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 14px 0 22px;
+    background: #fbfbf8;
+    page-break-inside: avoid;
+  }
+  .flow-meta {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    margin: 4px 0 10px;
+  }
+  .flow-meta span { background: #eef3f0; border-radius: 6px; padding: 3px 9px; }
+  .flow-meta b { color: #0f5c46; }
+  ol.steps { margin: 8px 0 6px 0; padding-left: 20px; }
+  ol.steps li { margin: 5px 0; }
+  .shot {
+    margin: 12px 0;
+    text-align: center;
+    page-break-inside: avoid;
+  }
+  .shot img {
+    max-width: 100%;
+    border: 1px solid #cdd7d2;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  .shot .cap {
+    font-size: 10.5px;
+    color: #6b7975;
+    margin-top: 5px;
+    font-style: italic;
+  }
+  .note {
+    border-left: 4px solid #e2a83a;
+    background: #fff8ea;
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 11.5px;
+    margin: 10px 0;
+  }
+  .note b { color: #8a5b00; }
+  .warn {
+    border-left: 4px solid #c94f4f;
+    background: #fdeeee;
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 11.5px;
+    margin: 10px 0;
+  }
+  .warn b { color: #8a2020; }
+  .pending {
+    border-left: 4px solid #9aa5a1;
+    background: #f1f3f2;
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 11.5px;
+    margin: 10px 0;
+    color: #4a5551;
+  }
+  code {
+    background: #eef1ef;
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 11px;
+  }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 11px; }
+  th, td { border: 1px solid #dde4e0; padding: 5px 8px; text-align: left; }
+  th { background: #12312a; color: #fff; }
+  tr:nth-child(even) { background: #f7f9f8; }
+  .footer-note { font-size: 10px; color: #8a9490; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="badge">M</div>
+  <h1>Manual Operacional</h1>
+  <div class="subtitle">Mesada App — guia funcional de todas as telas e fluxos, passo a passo, com prints reais</div>
+  <div class="meta">
+    Painel do Responsável (Master) · Painel Administrativo · App Mobile (usuário Comum)<br/>
+    Versão gerada a partir do estado real do sistema — validado contra o backend em produção de testes
+  </div>
+</div>
+
+<div class="toc">
+<h2 style="page-break-before:auto">Sumário</h2>
+<ol>
+  <li>Introdução
+    <ol class="sub" type="a"><li>O que é o Mesada App</li><li>Papéis de usuário</li></ol>
+  </li>
+  <li>Painel do Responsável (Web)
+    <ol class="sub" type="a">
+      <li>Criar conta (cadastrar a família)</li>
+      <li>Entrar no painel</li>
+      <li>Visão geral do Dashboard</li>
+      <li>Cadastrar e gerenciar filhos (definir a mesada)</li>
+      <li>Criar e organizar categorias</li>
+      <li>Criar tarefas, atividades e desafios</li>
+      <li>Vincular filhos a uma tarefa</li>
+      <li>Convidar filho para o app / convidar outro responsável</li>
+      <li>Gerenciar responsáveis (Masters)</li>
+      <li>Aprovar ou rejeitar tarefas concluídas</li>
+      <li>Consultar extrato e fechar o ciclo de mesada</li>
+      <li>Configurar notificações extras</li>
+      <li>Funcionalidades ainda em construção</li>
+    </ol>
+  </li>
+  <li>Painel Administrativo (equipe interna)
+    <ol class="sub" type="a">
+      <li>Entrar no painel administrativo</li>
+      <li>Trocar a senha temporária (primeiro acesso)</li>
+      <li>Convidar um administrador</li>
+      <li>Editar ou desativar um administrador</li>
+      <li>Criar e gerenciar grupos de acesso</li>
+      <li>Alterar meu e-mail e minha senha</li>
+    </ol>
+  </li>
+  <li>App Mobile — usuário Comum (filho)
+    <ol class="sub" type="a">
+      <li>Entrar com o código de convite</li>
+      <li>Consultar minhas tarefas</li>
+      <li>Marcar uma tarefa como feita, parcial ou não feita</li>
+      <li>Consultar histórico e saldo</li>
+    </ol>
+  </li>
+  <li>Referência rápida — quem pode fazer o quê</li>
+</ol>
+</div>
+
+<h2>1. Introdução</h2>
+
+<h3>1.1 O que é o Mesada App</h3>
+<p>
+O Mesada App é um sistema para famílias controlarem a mesada dos filhos de forma
+combinada e transparente: o responsável define tarefas e atividades (de casa, escola,
+esporte, etc.), cada uma com uma forma de recompensar — valor em reais ou pontos
+convertidos em reais — e o filho registra quando as cumpre. Ao final de cada período
+(o "ciclo de mesada"), o sistema soma bônus e desconta multas de tarefas obrigatórias
+não cumpridas, chegando ao valor final daquele ciclo.
+</p>
+<p>
+O sistema é dividido em três frentes, cada uma coberta neste manual:
+</p>
+<table>
+  <tr><th>Frente</th><th>Para quem</th><th>Onde</th></tr>
+  <tr><td>Painel do Responsável</td><td>Pai/mãe/responsável (Master)</td><td>Navegador (Web)</td></tr>
+  <tr><td>Painel Administrativo</td><td>Equipe interna do produto</td><td>Navegador (Web), área separada</td></tr>
+  <tr><td>App do filho</td><td>Usuário Comum (filho)</td><td>Aplicativo Android/iOS</td></tr>
+</table>
+
+<h3>1.2 Papéis de usuário</h3>
+<table>
+  <tr><th>Papel</th><th>O que pode fazer</th></tr>
+  <tr><td><b>Responsável Financeiro</b></td><td>Tudo do Responsável, mais: gerenciar assinatura e convidar/remover outros responsáveis. É sempre o primeiro Responsável cadastrado na família.</td></tr>
+  <tr><td><b>Responsável (Master)</b></td><td>Cadastrar filhos, categorias e tarefas; aprovar tarefas; fechar ciclos de mesada; gerar convites.</td></tr>
+  <tr><td><b>Comum (filho)</b></td><td>Consultar suas tarefas e indicar quando as cumpriu, pelo app mobile.</td></tr>
+  <tr><td><b>Administrador</b></td><td>Equipe interna do produto. O grupo "Owner" tem acesso total; outros grupos (ex. "Tecnologia") têm acesso conforme convidados pelo Owner.</td></tr>
+</table>
+<p>Uma família pode ter mais de um Responsável (ex.: pai e mãe), cada um com login próprio.</p>
+
+<h2>2. Painel do Responsável (Web)</h2>
+
+<h3>2.1 Criar conta (cadastrar a família)</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer pessoa (sem conta ainda)</span><span><b>Onde:</b> <code>/cadastro</code></span></div>
+  <p>É o primeiro passo de qualquer família nova — cria a família e o primeiro Responsável, que nasce automaticamente como <b>Responsável Financeiro</b>.</p>
+  <ol class="steps">
+    <li>Na tela de entrada, clique em <b>"Criar conta"</b> (ou acesse <code>/cadastro</code> diretamente).</li>
+    <li>Preencha <b>Nome da família</b> (ex.: "Família Silva"), <b>seu nome</b>, <b>e-mail</b> e uma <b>senha</b> de pelo menos 8 caracteres.</li>
+    <li>Repita a senha em <b>Confirmar senha</b>.</li>
+    <li>Clique em <b>"Criar conta"</b>.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/16-cadastro.png"/><div class="cap">Tela de cadastro da família</div></div>
+  <div class="note"><b>Resultado:</b> a conta é criada e você entra direto no Dashboard — não precisa confirmar e-mail nem fazer login separado.</div>
+  <div class="warn"><b>E-mail já cadastrado:</b> a tela avisa e sugere entrar na conta existente em vez de criar outra.</div>
+</div>
+
+<h3>2.2 Entrar no painel</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> Responsável já cadastrado</span><span><b>Onde:</b> <code>/login</code></span></div>
+  <ol class="steps">
+    <li>Acesse a tela de entrada e informe o <b>e-mail</b> e a <b>senha</b> cadastrados.</li>
+    <li>Clique em <b>"Entrar"</b>.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/01-login.png"/><div class="cap">Tela de entrada, com o link para criar conta</div></div>
+  <div class="note">Senha ou e-mail incorretos mostram a mensagem "E-mail ou senha incorretos" — sem indicar qual dos dois está errado, por segurança.</div>
+</div>
+
+<h3>2.3 Visão geral do Dashboard</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/dashboard</code>, primeira tela após entrar</span></div>
+  <p>Não é um fluxo de ação — é o resumo do estado atual da família: quantos filhos, saldo devedor total, quantos filhos estão com dívida, e o saldo individual de cada um.</p>
+  <div class="shot"><img src="../screenshots/web/02-dashboard.png"/><div class="cap">Dashboard com dados reais de uma família com 2 filhos</div></div>
+</div>
+
+<h3>2.4 Cadastrar e gerenciar filhos (definir a mesada)</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/filhos</code> → "Gestão de Filhos"</span></div>
+  <p>É aqui que se define a mesada de cada filho: o valor-base do ciclo, a periodicidade de fechamento e, se algum dia usar tarefas por pontos, o valor de cada ponto em reais.</p>
+  <ol class="steps">
+    <li>Abra <b>"Gestão de Filhos"</b> no menu lateral e clique em <b>"Novo filho"</b>.</li>
+    <li>Preencha <b>Nome</b> (obrigatório) e, opcionalmente, um <b>Apelido</b>.</li>
+    <li>Escolha o <b>Ciclo de fechamento</b>: Semanal, Quinzenal, Mensal ou Personalizado.</li>
+    <li>Informe a <b>Mesada base (R$)</b> — o valor de partida de cada ciclo, antes de bônus e multas.</li>
+    <li>Se for usar tarefas por pontos com este filho, informe o <b>Valor do ponto (R$)</b>.</li>
+    <li>Clique em <b>"Salvar"</b>.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/22-filhos-form-erro.png"/><div class="cap">Formulário de novo filho — nome em branco bloqueado com mensagem clara</div></div>
+  <div class="note"><b>Validações:</b> nome é obrigatório; mesada base não pode ser negativa; valor do ponto, se informado, precisa ser maior que zero.</div>
+  <div class="shot"><img src="../screenshots/web/03-filhos.png"/><div class="cap">Lista de filhos cadastrados, com saldo devedor e status "Em dia"</div></div>
+  <p><b>Editar:</b> clique no ícone de lápis no card do filho — mesmo formulário, já preenchido.<br/>
+  <b>Remover:</b> clique no ícone de lixeira — remoção lógica (o histórico da família não se perde).</p>
+</div>
+
+<h3>2.5 Criar e organizar categorias</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/categorias</code></span></div>
+  <p>Categorias agrupam as tarefas (Casa, Escola, Esporte, etc.). O sistema já vem com categorias padrão — marcadas como <b>"Padrão"</b> — que não podem ser editadas nem removidas, iguais para todas as famílias.</p>
+  <ol class="steps">
+    <li>Clique em <b>"Nova categoria"</b>.</li>
+    <li>Informe o <b>Nome</b>.</li>
+    <li>Opcionalmente, escolha uma <b>Categoria pai</b> para criar uma subcategoria.</li>
+    <li>Clique em <b>"Salvar"</b>.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/07-categorias.png"/><div class="cap">Categorias padrão (cadeado) e uma customizada ("Estudos Extras", editável)</div></div>
+  <p>Categorias customizadas podem ser editadas (ícone de lápis) ou removidas (ícone de lixeira) a qualquer momento.</p>
+</div>
+
+<h3>2.6 Criar tarefas, atividades e desafios</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/tarefas</code></span></div>
+  <p>É o coração do sistema: cada tarefa define como ela é recompensada (ou multada) quando um filho a cumpre ou deixa de cumprir.</p>
+  <ol class="steps">
+    <li>Clique em <b>"Nova tarefa"</b>.</li>
+    <li>Escolha a <b>Categoria</b> e dê um <b>Nome</b> (e, opcionalmente, uma <b>Descrição</b>).</li>
+    <li>Escolha o <b>Modo de cálculo</b>: <b>Valor em R$</b> (informe o valor direto) ou <b>Pontos</b> (informe a pontuação — o filho precisa ter um "valor do ponto" cadastrado).</li>
+    <li>Use <b>"Sugerir valor"</b> se quiser que o sistema calcule um valor equilibrado, dividindo a mesada base pela quantidade de tarefas já vinculadas ao filho escolhido.</li>
+    <li>Escolha o <b>Tipo</b>: <b>Recorrente</b> (repete a cada ciclo) ou <b>Avulsa</b> (tem uma data-limite — "Válida até").</li>
+    <li>Escolha a <b>Natureza</b>: <b>Bônus</b> (soma valor quando cumprida) ou <b>Obrigatória</b> (não soma nada quando cumprida, mas gera uma <b>multa</b> configurável quando não cumprida).</li>
+    <li>Escolha a <b>Evidência</b> exigida: Nenhuma, Foto, ou Integração automática (Strava, Google Fit ou Apple Health, para tarefas de esporte).</li>
+    <li>Ligue <b>"Aceita parcial"</b> se o filho puder registrar uma conclusão parcial (ex.: 50% de uma meta).</li>
+    <li>Ligue <b>"Requer aprovação do responsável"</b> se um Responsável precisa validar antes do valor entrar no ciclo (padrão: ligado para tarefas com evidência manual).</li>
+    <li>Clique em <b>"Salvar"</b>.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/23-tarefas-form-novo.png"/><div class="cap">Formulário de nova tarefa — campos se ajustam ao tipo escolhido</div></div>
+  <div class="shot"><img src="../screenshots/web/08-tarefas.png"/><div class="cap">Tarefas cadastradas: bônus, obrigatória com multa, e uma em modo Pontos</div></div>
+</div>
+
+<h3>2.7 Vincular filhos a uma tarefa</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/tarefas</code> → botão "Filhos" no card da tarefa</span></div>
+  <p>Uma tarefa só gera valor para um filho depois de ele estar <b>vinculado</b> (aderente) a ela — é possível ter tarefas diferentes para cada filho, ou a mesma tarefa para todos.</p>
+  <ol class="steps">
+    <li>No card da tarefa, clique em <b>"Filhos"</b>.</li>
+    <li>Para cada filho, informe opcionalmente um valor (ou pontuação) <b>diferente do padrão da tarefa</b> só para ele.</li>
+    <li>Clique em <b>"Vincular"</b> para aquele filho.</li>
+    <li>Para desvincular, clique no ícone ao lado do botão "Vincular".</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/21-tarefas-vincular-filhos.png"/><div class="cap">Vinculando Miguel e Sofia à tarefa "Arrumar o quarto"</div></div>
+</div>
+
+<h3>2.8 Convidar filho para o app / convidar outro responsável</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/acessos</code> → aba "Convites"</span></div>
+  <p>O filho não tem e-mail nem senha — ele entra no app mobile usando um código de convite. Um segundo Responsável (ex.: cônjuge) também entra por convite.</p>
+  <ol class="steps">
+    <li>Abra <b>"Controle de Acessos"</b> → aba <b>"Convites"</b> → <b>"Gerar convite"</b>.</li>
+    <li>Escolha o <b>Tipo de convite</b>: <b>"Filho (app mobile)"</b> ou <b>"Segundo responsável"</b>.</li>
+    <li>Se for filho, selecione qual filho (já cadastrado em "Gestão de Filhos"). Se for responsável, informe o nome do convidado.</li>
+    <li>Clique em <b>"Gerar"</b>.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/24-acessos-gerar-convite.png"/><div class="cap">Escolhendo o tipo de convite</div></div>
+  <div class="note">O código gerado aparece grande na tela, com botão de copiar — compartilhe por WhatsApp, mensagem, etc. Cada código expira em um prazo determinado e pode ser revogado antes de ser usado.</div>
+  <div class="shot"><img src="../screenshots/web/05-acessos.png"/><div class="cap">Lista de convites: pendente, utilizado e a opção de revogar</div></div>
+</div>
+
+<h3>2.9 Gerenciar responsáveis (Masters)</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável (desativar é bloqueado em certos casos)</span><span><b>Onde:</b> <code>/acessos</code> → aba "Responsáveis"</span></div>
+  <p>Não existe cadastro direto de um segundo responsável — ele só entra por convite (seção anterior). Aqui você só visualiza e pode desativar.</p>
+  <div class="note"><b>Bloqueios de segurança:</b> não é possível desativar a própria conta, nem desativar o único Responsável Financeiro ativo da família — sempre precisa haver pelo menos um.</div>
+</div>
+
+<h3>2.10 Aprovar ou rejeitar tarefas concluídas</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/aprovacoes</code></span></div>
+  <p>Toda tarefa marcada como concluída pelo filho no app mobile, que exija aprovação, aparece aqui aguardando decisão do Responsável.</p>
+  <ol class="steps">
+    <li>Abra <b>"Aprovações Pendentes"</b>.</li>
+    <li>Confira o valor/pontos que a execução vai gerar se aprovada.</li>
+    <li>Clique em <b>"Aprovar"</b> (o valor entra no ciclo) ou <b>"Rejeitar"</b> (a execução vira "Não feito", sem gerar valor).</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/04-aprovacoes.png"/><div class="cap">Uma execução pendente aguardando aprovação</div></div>
+  <div class="pending"><b>Ajuste conhecido:</b> nesta versão a lista ainda identifica a execução por um código técnico em vez do nome do filho/tarefa — a API já foi corrigida para enviar os nomes, falta só a tela consumir esse campo novo.</div>
+</div>
+
+<h3>2.11 Consultar extrato e fechar o ciclo de mesada</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/extrato</code></span></div>
+  <ol class="steps">
+    <li>Abra <b>"Extrato e Histórico"</b> e escolha o filho no seletor.</li>
+    <li>Veja a <b>prévia do período em andamento</b>: mesada base, bônus, multas, saldo devedor anterior e o valor final previsto — nada disso está salvo ainda.</li>
+    <li>Quando o período terminar de verdade, clique em <b>"Fechar ciclo"</b>, confirme as datas de início e fim, e clique em <b>"Fechar ciclo"</b> no diálogo.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/06-extrato.png"/><div class="cap">Prévia do período atual e o histórico de ciclos já fechados</div></div>
+  <div class="warn"><b>Atenção:</b> fechar um ciclo é definitivo — os valores daquele período não podem ser recalculados depois.</div>
+</div>
+
+<h3>2.12 Configurar notificações extras</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Responsável</span><span><b>Onde:</b> <code>/notificacoes</code></span></div>
+  <p>Além do e-mail principal do Responsável, é possível cadastrar e-mails e telefones extras (ex.: o outro avô, uma babá) para também receberem os alertas da família.</p>
+  <ol class="steps">
+    <li>Abra <b>"Notificações"</b> e clique em <b>"Adicionar destinatário"</b>.</li>
+    <li>Escolha o <b>Tipo</b>: E-mail ou Telefone.</li>
+    <li>Informe o valor — telefone precisa estar no formato internacional, ex. <code>+5511999999999</code>.</li>
+    <li>Clique em <b>"Adicionar"</b>.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/17-notificacoes-vazio.png"/><div class="cap">Tela sem nenhum destinatário cadastrado ainda</div></div>
+  <div class="shot"><img src="../screenshots/web/19-notificacoes-erro-validacao.png"/><div class="cap">Telefone fora do formato — mensagem explica o formato esperado</div></div>
+  <div class="shot"><img src="../screenshots/web/20-notificacoes-lista.png"/><div class="cap">Um e-mail e um telefone cadastrados, ambos ativos</div></div>
+  <p>Cada destinatário tem um interruptor para <b>ativar/desativar</b> sem precisar remover, e um botão para <b>remover</b> definitivamente (com confirmação).</p>
+</div>
+
+<h3>2.13 Funcionalidades ainda em construção</h3>
+<div class="flow">
+  <p><b>Assinatura</b> e <b>Gráficos de Desempenho</b> aparecem no menu, mas ainda mostram a tela "Em breve" — o backend para essas duas ainda não foi construído.</p>
+  <div class="shot"><img src="../screenshots/web/09-assinatura.png"/><div class="cap">Placeholder da tela de Assinatura</div></div>
+</div>
+
+<h2>3. Painel Administrativo (equipe interna)</h2>
+<p>
+Área separada do Painel do Responsável — mesmo endereço, rotas diferentes
+(<code>/admin/...</code>), login e sessão totalmente independentes. É onde a
+equipe interna do produto (não as famílias clientes) gerencia quem, dentro
+da própria equipe, tem acesso a esse painel.
+</p>
+
+<h3>3.1 Entrar no painel administrativo</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> Administrador já convidado</span><span><b>Onde:</b> <code>/admin/login</code></span></div>
+  <div class="shot"><img src="../screenshots/web/11-admin-login.png"/><div class="cap">Login administrativo — visual distinto do painel da família</div></div>
+</div>
+
+<h3>3.2 Trocar a senha temporária (primeiro acesso)</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Administrador recém-convidado</span><span><b>Onde:</b> automático após o primeiro login</span></div>
+  <p>Todo Administrador novo (ou que teve a senha resetada) é obrigado a trocar a senha antes de acessar qualquer outra tela.</p>
+  <ol class="steps">
+    <li>Informe a <b>senha atual</b> (a temporária recebida).</li>
+    <li>Escolha uma <b>nova senha</b> (mín. 8 caracteres) e confirme.</li>
+    <li>Clique em <b>"Trocar senha"</b>.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/12-admin-trocar-senha.png"/><div class="cap">Troca de senha obrigatória antes de liberar o painel</div></div>
+</div>
+
+<h3>3.3 Convidar um administrador</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> só o grupo Owner</span><span><b>Onde:</b> <code>/admin/administradores</code></span></div>
+  <ol class="steps">
+    <li>Clique em <b>"Convidar"</b>.</li>
+    <li>Informe <b>Nome</b>, <b>E-mail</b> e escolha o <b>Grupo</b> ao qual ele vai pertencer.</li>
+    <li>Clique em <b>"Convidar"</b>.</li>
+    <li>Uma <b>senha temporária</b> é exibida — <b>ela só aparece uma vez</b>. Copie e envie ao novo administrador por um canal seguro.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/13-admin-administradores.png"/><div class="cap">Lista de administradores — Owner e um membro do grupo Tecnologia</div></div>
+  <div class="warn">Quem não é Owner só enxerga esta lista em modo leitura — sem botão de convidar nem editar.</div>
+</div>
+
+<h3>3.4 Editar ou desativar um administrador</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> só o grupo Owner</span><span><b>Onde:</b> <code>/admin/administradores</code></span></div>
+  <p><b>Editar:</b> ícone de lápis na linha do administrador — permite mudar nome e grupo (o e-mail não pode ser alterado por aqui; é o próprio administrador quem troca o e-mail dele, em "Meu perfil").</p>
+  <p><b>Desativar:</b> ícone de "remover pessoa" — bloqueado se for a própria conta do Owner logado, ou se for o último Owner ativo do sistema.</p>
+</div>
+
+<h3>3.5 Criar e gerenciar grupos de acesso</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> só o grupo Owner</span><span><b>Onde:</b> <code>/admin/grupos</code></span></div>
+  <ol class="steps">
+    <li>Clique em <b>"Novo grupo"</b>.</li>
+    <li>Informe <b>Nome</b> e <b>Descrição</b>.</li>
+    <li>Adicione chaves de <b>permissão</b> livremente (texto, ex. <code>gerenciarAdministradores</code>) e ligue/desligue cada uma.</li>
+    <li>Clique em <b>"Salvar"</b>.</li>
+  </ol>
+  <div class="shot"><img src="../screenshots/web/14-admin-grupos.png"/><div class="cap">Grupo "Owner" (fixo, acesso total) e "Tecnologia" (customizado)</div></div>
+  <div class="pending"><b>Importante:</b> hoje essas chaves de permissão são só um registro — nenhuma tela ou endpoint ainda usa esse mapa para decidir o que um administrador pode fazer. A única distinção de acesso realmente aplicada é Owner vs. não-Owner. Ver <code>docs/adendo-web.md</code> para detalhes.</div>
+  <p>O grupo <b>Owner</b> é fixo: não pode ser editado, renomeado nem removido. Um grupo customizado só pode ser removido se não houver nenhum administrador vinculado a ele.</p>
+</div>
+
+<h3>3.6 Alterar meu e-mail e minha senha</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> qualquer Administrador, sobre a própria conta</span><span><b>Onde:</b> <code>/admin/perfil</code> → "Meu perfil"</span></div>
+  <div class="shot"><img src="../screenshots/web/15-admin-perfil.png"/><div class="cap">Trocar e-mail e trocar senha, lado a lado</div></div>
+  <p><b>Trocar e-mail:</b> informe o novo e-mail e salve — bloqueado se já pertencer a outro administrador.<br/>
+  <b>Trocar senha:</b> informe a senha atual, a nova (mín. 8 caracteres) e confirme.</p>
+</div>
+
+<h2>4. App Mobile — usuário Comum (filho)</h2>
+<div class="pending">
+<b>Sem prints reais nesta seção.</b> Nenhum dos dois apps (Android/iOS) foi
+compilado ou executado de fato até hoje — Android por uma restrição de rede
+do ambiente de desenvolvimento (domínio de dependências bloqueado), iOS por
+exigir macOS/Xcode, indisponível neste ambiente. O código-fonte existe e foi
+revisado com cuidado, mas os fluxos abaixo descrevem o comportamento
+esperado, não uma tela confirmada visualmente. Detalhes técnicos completos
+em <code>docs/adendo-mobile.md</code>.
+</div>
+
+<h3>4.1 Entrar com o código de convite</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> o filho, no primeiro uso do app</span></div>
+  <ol class="steps">
+    <li>Abra o app e insira o <b>código de convite</b> recebido do Responsável (gerado no fluxo 2.8).</li>
+    <li>Configure um <b>PIN</b> ou ative a <b>biometria do aparelho</b> para os próximos acessos.</li>
+  </ol>
+  <p>Esta é a única tela do app mobile que já fala de verdade com o backend hoje (<code>POST /api/auth/convites/{codigo}/resgatar</code>).</p>
+</div>
+
+<h3>4.2 Consultar minhas tarefas</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> o filho</span></div>
+  <p>Lista as tarefas do ciclo atual vinculadas a ele, com status (pendente, feito, parcial, não feito).</p>
+  <div class="pending">Estrutura real de dados local e sincronização já implementadas, mas a tela hoje exibe dados de exemplo — o backend ainda não tem um endpoint de listagem de tarefas/execuções para o usuário Comum.</div>
+</div>
+
+<h3>4.3 Marcar uma tarefa como feita, parcial ou não feita</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> o filho</span></div>
+  <ol class="steps">
+    <li>Abra a tarefa na lista.</li>
+    <li>Se exigir evidência, tire uma <b>foto</b> (ou deixe a integração automática, ex. Strava, registrar sozinha).</li>
+    <li>Indique a conclusão: <b>Feito</b>, <b>Parcial</b> (se a tarefa aceitar) ou <b>Não feito</b>.</li>
+  </ol>
+  <p>Funciona <b>offline</b>: sem conexão, o registro fica numa fila local e é enviado ao servidor assim que o aparelho reconectar. Se a tarefa exigir aprovação, ela entra na fila de "Aprovações Pendentes" do Responsável (fluxo 2.10).</p>
+</div>
+
+<h3>4.4 Consultar histórico e saldo</h3>
+<div class="flow">
+  <div class="flow-meta"><span><b>Quem:</b> o filho</span></div>
+  <p>Tarefas de ciclos anteriores, extrato simplificado da mesada, saldo do ciclo atual e saldo devedor acumulado (se houver).</p>
+  <div class="pending">Ainda placeholder "Em breve" — sem números inventados — até o backend expor os dados necessários para o usuário Comum.</div>
+</div>
+
+<h2>5. Referência rápida — quem pode fazer o quê</h2>
+<table>
+  <tr><th>Ação</th><th>Responsável</th><th>Responsável Financeiro</th><th>Owner (Admin)</th><th>Outro Admin</th><th>Filho (Comum)</th></tr>
+  <tr><td>Criar conta / família</td><td>✔️ (o 1º vira Financeiro)</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+  <tr><td>Cadastrar filhos, categorias, tarefas</td><td>✔️</td><td>✔️</td><td>—</td><td>—</td><td>—</td></tr>
+  <tr><td>Aprovar tarefas / fechar ciclo</td><td>✔️</td><td>✔️</td><td>—</td><td>—</td><td>—</td></tr>
+  <tr><td>Convidar 2º responsável</td><td>✔️</td><td>✔️</td><td>—</td><td>—</td><td>—</td></tr>
+  <tr><td>Gerenciar assinatura</td><td>—</td><td>✔️ (quando existir)</td><td>—</td><td>—</td><td>—</td></tr>
+  <tr><td>Convidar/gerenciar administradores</td><td>—</td><td>—</td><td>✔️</td><td>Somente leitura</td><td>—</td></tr>
+  <tr><td>Criar/editar grupos de acesso</td><td>—</td><td>—</td><td>✔️</td><td>Somente leitura</td><td>—</td></tr>
+  <tr><td>Consultar/marcar tarefas próprias</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✔️</td></tr>
+</table>
+
+<p class="footer-note">
+Manual gerado a partir do estado real do sistema, validado rodando o
+backend e o frontend juntos e navegando de verdade por cada tela — não é um
+documento de intenção. Documentação técnica de referência (para manutenção
+e evolução do código) em <code>docs/especificacao.md</code>,
+<code>docs/adendo-web.md</code> e <code>docs/adendo-mobile.md</code> no
+repositório do projeto.
+</p>
+
+</body>
+</html>

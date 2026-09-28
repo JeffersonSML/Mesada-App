@@ -13,6 +13,10 @@ web/.angular/
 web/npm-debug.log*
 web/yarn-error.log*
 
+# ==== Manual operacional (docs/manual-operacional) ====
+docs/manual-operacional/node_modules/
+docs/manual-operacional/*.pdf
+
 # ==== Android (mobile-android) ====
 mobile-android/.gradle/
 mobile-android/build/
