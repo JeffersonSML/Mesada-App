@@ -7,3 +7,9 @@ public sealed record TokenResponse(string Token);
 public sealed record ResgatarConviteRequest(string DispositivoId);
 
 public sealed record ResgatarConviteMasterRequest(string Email, string Senha);
+
+public sealed record EsqueciSenhaMasterRequest(string Email);
+
+public sealed record RedefinirSenhaMasterRequest(string Token, string NovaSenha);
+
+public sealed record TrocarSenhaMasterRequest(string SenhaAtual, string NovaSenha);

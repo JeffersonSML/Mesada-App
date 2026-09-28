@@ -324,3 +324,15 @@ public class GrupoAdministradorConfiguration : IEntityTypeConfiguration<GrupoAdm
         builder.Property(g => g.UpdatedAt).ValueGeneratedOnAddOrUpdate();
     }
 }
+
+public class RedefinicaoSenhaMasterConfiguration : IEntityTypeConfiguration<RedefinicaoSenhaMaster>
+{
+    public void Configure(EntityTypeBuilder<RedefinicaoSenhaMaster> builder)
+    {
+        builder.ToTable("redefinicoes_senha_master");
+        builder.HasKey(r => r.Id);
+        builder.HasIndex(r => r.TokenHash).IsUnique();
+        builder.Property(r => r.CreatedAt).ValueGeneratedOnAdd();
+        builder.HasOne(r => r.UsuarioMaster).WithMany().HasForeignKey(r => r.UsuarioMasterId);
+    }
+}

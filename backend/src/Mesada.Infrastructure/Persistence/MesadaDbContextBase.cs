@@ -29,6 +29,7 @@ public abstract class MesadaDbContextBase(DbContextOptions options) : DbContext(
     public DbSet<SuporteTicket> SuporteTickets => Set<SuporteTicket>();
     public DbSet<Administrador> Administradores => Set<Administrador>();
     public DbSet<GrupoAdministrador> GruposAdministrador => Set<GrupoAdministrador>();
+    public DbSet<RedefinicaoSenhaMaster> RedefinicoesSenhaMaster => Set<RedefinicaoSenhaMaster>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

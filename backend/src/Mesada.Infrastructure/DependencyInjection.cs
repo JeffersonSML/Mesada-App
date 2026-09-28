@@ -111,6 +111,7 @@ public static class DependencyInjection
         services.AddScoped<IFamiliaRepository, AdminFamiliaRepository>();
         services.AddScoped<IAdministradorRepository, AdminAdministradorRepository>();
         services.AddScoped<IGrupoAdministradorRepository, AdminGrupoAdministradorRepository>();
+        services.AddScoped<IRedefinicaoSenhaRepository, AdminRedefinicaoSenhaRepository>();
         services.AddScoped<IUnitOfWork, AdminUnitOfWork>();
 
         // Consultas e repositórios tenant-scoped (AppDbContext / mesada_app / RLS).
@@ -130,6 +131,9 @@ public static class DependencyInjection
         services.AddScoped<AutenticarMasterUseCase>();
         services.AddScoped<ResgatarConviteComumUseCase>();
         services.AddScoped<ResgatarConviteMasterUseCase>();
+        services.AddScoped<EsqueciSenhaMasterUseCase>();
+        services.AddScoped<RedefinirSenhaMasterUseCase>();
+        services.AddScoped<TrocarSenhaMasterUseCase>();
         services.AddScoped<CriarFamiliaUseCase>();
         services.AddScoped<ObterMinhaFamiliaUseCase>();
         services.AddScoped<AtualizarMinhaFamiliaUseCase>();
@@ -199,6 +203,9 @@ public static class DependencyInjection
             return new PagarMeApiClient(options.SecretKey, null, null, null, null, null, null, null, false);
         });
         services.AddScoped<IPaymentProvider, PagarMePaymentProvider>();
+
+        services.Configure<WebAppOptions>(configuration.GetSection(WebAppOptions.SecaoConfiguracao));
+        services.AddSingleton<IAppUrlProvider, AppUrlProvider>();
 
         services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SecaoConfiguracao));
         services.AddResend(_ => { });
