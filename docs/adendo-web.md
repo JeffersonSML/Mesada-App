@@ -117,8 +117,10 @@ Assinaturas, Suporte, Métricas, Categorias Padrão.
 
 ### Bugs reais encontrados nessa validação (e já corrigidos)
 
-Nenhum dos dois foi pego pelos testes de integração do backend, que batem
-na API com tipos C# diretamente em vez de JSON de verdade:
+Os dois primeiros não foram pegos pelos testes de integração do backend,
+que batem na API com tipos C# diretamente em vez de JSON de verdade; o
+terceiro só apareceu ao olhar o print de verdade da tela, não pela leitura
+do código:
 
 - **Enums serializados como número em vez de string** — o contrato
   documentado (e o que o frontend real envia/espera) sempre usa string.
@@ -127,6 +129,18 @@ na API com tipos C# diretamente em vez de JSON de verdade:
   hospedado do Lovable, ou este projeto rodando localmente) tinha toda
   chamada bloqueada pelo navegador antes de chegar à API. Corrigido com
   uma policy de CORS configurável (`Cors:OrigensPermitidas`).
+- **Conteúdo vazando para fora do diálogo "Convite gerado"** — a caixa do
+  código, a linha do link e os botões "Copiar link"/"Copiar código"
+  ultrapassavam a borda do card branco em até ~90px, ficando visíveis sobre
+  o fundo escurecido. Causa: `DialogContent` usa `display: grid`, e o texto
+  do código (`tracking-[0.2em]`, letra bem espaçada) tinha uma largura
+  mínima maior que o diálogo — como grid items não encolhem abaixo do
+  próprio conteúdo por padrão (`min-width: auto`), isso empurrava a coluna
+  inteira do grid (e todos os elementos dela) para fora do card. Corrigido
+  adicionando `min-w-0` nos containers afetados e `break-all` no texto do
+  código, em `src/routes/_app.acessos.tsx`. Medido via DOM antes/depois
+  (não só visualmente): overflow caiu de ~65-90px para 0px em todos os
+  elementos.
 
 ### Pendência conhecida
 
