@@ -23,10 +23,12 @@ RUN dotnet publish src/Mesada.Api/Mesada.Api.csproj \
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
-RUN useradd --uid 1654 --create-home mesada
-USER mesada
+# Usa o usuário não-root "app" já embutido na imagem base (.NET 8+) em vez
+# de criar um novo — plataformas de build como a Railway já usam esse UID
+# para outra finalidade na própria imagem, e `useradd --uid` fixo colide.
+USER app
 
-COPY --from=build --chown=mesada:mesada /app/publish .
+COPY --from=build --chown=app:app /app/publish .
 
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
