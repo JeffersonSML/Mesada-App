@@ -23,7 +23,7 @@ ritmo de evolução enquanto o produto é construído por um único time.
 
 ```
 /backend          API .NET C# (RESTful, multi-tenant, motor de cálculo de mesada)
-/web              Painel do Master + Painel Administrativo — código vive no Lovable; ver web/README.md
+/web              Painel do Master + Painel Administrativo (React + TanStack Start); ver web/README.md
 /mobile-android   App nativo Kotlin (uso exclusivo do usuário Comum/filho)
 /mobile-ios       App nativo Swift (uso exclusivo do usuário Comum/filho)
 /infra            Infraestrutura: schema/migrações PostgreSQL, IaC, scripts de deploy
@@ -37,7 +37,7 @@ ritmo de evolução enquanto o produto é construído por um único time.
 |---|---|
 | Backend | .NET C# — API RESTful multi-tenant |
 | Banco de dados | PostgreSQL com Row Level Security |
-| Web | React + TypeScript, via [Lovable](https://lovable.dev) (ver [adendo Web](docs/adendo-web.md), [ADR 0004](docs/adr/0004-web-via-lovable.md)) |
+| Web | React + TypeScript + TanStack Start + Tailwind + shadcn/ui, mantida neste repositório (ver [adendo Web](docs/adendo-web.md), [ADR 0008](docs/adr/0008-web-mantida-no-repositorio.md)) |
 | Mobile Android | Kotlin nativo (ver [adendo Mobile](docs/adendo-mobile.md)) |
 | Mobile iOS | Swift nativo (ver [adendo Mobile](docs/adendo-mobile.md)) |
 | Offline (mobile) | SQLite local + fila de sincronização |
@@ -51,7 +51,7 @@ ritmo de evolução enquanto o produto é construído por um único time.
 1. Estruturar o repositório no GitHub ✅
 2. Provisionar o PostgreSQL e modelar o schema inicial ✅
 3. Criar o projeto backend .NET com autenticação e o motor de cálculo ✅
-4. Criar o projeto Web (via Lovable) ✅
+4. Criar o projeto Web ✅ (inicialmente via Lovable; migrada para este repositório — ver [ADR 0008](docs/adr/0008-web-mantida-no-repositorio.md))
 5. Criar os projetos mobile nativos (Android e iOS) ✅ (não compilados neste ambiente — ver [ADR 0005](docs/adr/0005-mobile-restricoes-de-ambiente.md))
 6. Configurar os serviços de infraestrutura (push, e-mail, storage, pagamento) ✅ (implementados, sem credenciais reais neste ambiente — ver [ADR 0006](docs/adr/0006-infra-servicos-externos.md))
 7. Completar a superfície HTTP do backend (CRUD completo de todas as entidades) e o Módulo Administrador com grupos de acesso ✅ (ver `backend/README.md`; demais telas do Administrador — Famílias/Assinaturas/Suporte/Métricas — ainda pendentes)
@@ -66,6 +66,5 @@ ritmo de evolução enquanto o produto é construído por um único time.
   na aplicação e Row Level Security no PostgreSQL.
 - Integração com gateways de pagamento é sempre feita atrás da interface
   `IPaymentProvider`, nunca diretamente contra o SDK do provedor.
-- **Todo frontend (Web, e qualquer outra interface) é construído via Lovable**
-  — o código React do diretório `/web` é gerado/gerenciado pelo Lovable, não
-  escrito manualmente fora dele.
+- **O frontend Web vive em `/web`** e é mantido diretamente neste repositório
+  (o Lovable não é mais usado — ver [ADR 0008](docs/adr/0008-web-mantida-no-repositorio.md)).

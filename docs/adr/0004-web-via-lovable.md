@@ -1,6 +1,6 @@
 # ADR 0004: Web construída via Lovable (React), não Angular
 
-- Status: aceito
+- Status: substituído pelo [ADR 0008](0008-web-mantida-no-repositorio.md)
 - Data: 2026-09-22
 
 ## Contexto
